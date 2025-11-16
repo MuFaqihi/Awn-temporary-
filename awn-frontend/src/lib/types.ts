@@ -33,6 +33,10 @@ export interface Appointment {
   place?: string;
   meetLink?: string;
   cancelReason?: string;
+  note?: string;
+  // Backend might return different names for notes; accept these optional aliases
+  patient_notes?: string;
+  notes?: string;
 }
 
 export type TherapistAppointment = Omit<Appointment, "therapistId"> & {

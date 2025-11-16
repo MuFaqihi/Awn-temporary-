@@ -32,7 +32,7 @@ interface StepData {
   sessionPreference?: string;
 }
 
-export default function MedicalHistorySetup({ locale, onComplete }: Props) {
+export default function MedicalHistorySetup({ locale, onComplete, onSave }: Props) {
   const [currentStep, setCurrentStep] = useState(1);
   const [stepData, setStepData] = useState<StepData>({});
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);

@@ -14,7 +14,7 @@ export default function MedicalHistorySummaryPage({ params }: Props) {
   const locale = params.locale;
   
   return (
-    <DashboardLayout locale={resolvedParams.locale}>
+    <DashboardLayout locale={locale}>
       <MedicalHistorySummary locale={locale} />
     </DashboardLayout>
   );

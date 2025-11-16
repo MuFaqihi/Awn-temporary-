@@ -443,8 +443,9 @@ export default function DashboardClient({ locale }: Props) {
                   const apiTher = (appointment as any).therapists || (appointment as any).__resolvedTherapist || null;
                   const therapist = apiTher ? {
                     name: { en: apiTher.name_en || apiTher.name || apiTher.name_en || '', ar: apiTher.name_ar || apiTher.name_ar || '' },
+                    specialties: apiTher.specialties || [],
                     image: normalizeImage(apiTher.avatar_url || apiTher.avatar || apiTher.image || apiTher.image_url || apiTher.avatarUrl || apiTher.avatar_url)
-                  } : getTherapistById(appointment.therapistId) || { name: { en: '', ar: '' }, image: undefined };
+                  } : getTherapistById(appointment.therapistId) || { name: { en: '', ar: '' }, specialties: [], image: undefined };
                   
                   return (
                     <Card key={appointment.id} className="relative overflow-hidden group hover:shadow-lg transition-all duration-300">
@@ -594,6 +595,7 @@ export default function DashboardClient({ locale }: Props) {
                 const apiTher = sourceApt ? (sourceApt as any).therapists : null;
                 const therapist = apiTher ? {
                   name: { en: apiTher.name_en || apiTher.name || '', ar: apiTher.name_ar || '' },
+                  specialties: apiTher.specialties || [],
                   image: apiTher.avatar_url || apiTher.avatar || apiTher.image || undefined
                 } : getTherapistById(noteData.therapistId);
                 return (

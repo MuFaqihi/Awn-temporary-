@@ -48,12 +48,12 @@ export default function FavoritesClient({ locale }: FavoritesClientProps) {
           const list = Array.isArray(tRes) ? tRes : (tRes?.data || []);
           if (!cancelled) {
             const mapped = ids
-              .map(id => list.find((t: any) => String(t.id) === String(id)))
+              .map((id: string) => list.find((t: any) => String(t.id) === String(id)))
               .filter(Boolean);
             // If none matched (frontend local data uses slugs), try local fallback mapping
             if (mapped.length === 0) {
               const localMatches = ids
-                .map(id => therapists.find(t => String(t.id).toLowerCase() === String(id).toLowerCase()))
+                .map((id: string) => therapists.find(t => String(t.id).toLowerCase() === String(id).toLowerCase()))
                 .filter(Boolean);
               setFavoriteProfiles(localMatches as any[]);
             } else {
@@ -63,7 +63,7 @@ export default function FavoritesClient({ locale }: FavoritesClientProps) {
         } catch (tErr) {
           console.warn('Failed to fetch therapists from backend, falling back to local data', tErr);
           const localMatches = ids
-            .map(id => therapists.find(t => String(t.id).toLowerCase() === String(id).toLowerCase()))
+            .map((id: string) => therapists.find(t => String(t.id).toLowerCase() === String(id).toLowerCase()))
             .filter(Boolean);
           if (!cancelled) setFavoriteProfiles(localMatches as any[]);
         }
@@ -114,12 +114,12 @@ export default function FavoritesClient({ locale }: FavoritesClientProps) {
           const tRes: any = await api.getTherapists();
           const list = Array.isArray(tRes) ? tRes : (tRes?.data || []);
           const mapped = ids
-            .map(id => list.find((t: any) => String(t.id) === String(id)))
+            .map((id: string) => list.find((t: any) => String(t.id) === String(id)))
             .filter(Boolean);
           setFavoriteProfiles(mapped as any[]);
         } catch (tErr) {
           const localMatches = ids
-            .map(id => therapists.find(t => String(t.id).toLowerCase() === String(id).toLowerCase()))
+            .map((id: string) => therapists.find(t => String(t.id).toLowerCase() === String(id).toLowerCase()))
             .filter(Boolean);
           setFavoriteProfiles(localMatches as any[]);
         }
@@ -345,13 +345,13 @@ export default function FavoritesClient({ locale }: FavoritesClientProps) {
 
                       {/* Languages and Modes */}
                       <div className="flex flex-wrap gap-2 mt-3">
-                        {Array.isArray(therapist.languages) && therapist.languages.slice(0, 2).map((lang) => (
+                        {Array.isArray(therapist.languages) && therapist.languages.slice(0, 2).map((lang: string) => (
                           <Badge key={lang} variant="secondary" className="text-xs bg-gray-100 text-gray-700">
                             <Globe className="h-3 w-3 mr-1" />
                             {lang}
                           </Badge>
                         ))}
-                        {Array.isArray(therapist.modes) && therapist.modes.map((mode) => (
+                        {Array.isArray(therapist.modes) && therapist.modes.map((mode: string) => (
                           <Badge key={mode} variant="secondary" className="text-xs bg-teal-100 text-teal-700">
                             {mode === "home" ? "🏠" : "💻"} 
                             {mode === "home" ? (ar ? "منزلية" : "Home") : (ar ? "أونلاين" : "Online")}

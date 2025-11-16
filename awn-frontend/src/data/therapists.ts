@@ -1,6 +1,7 @@
 // Define the Therapist type
 export type Therapist = {
   id: string;
+  slug?: string;
   name: { ar: string; en: string };
   image: string;
   specialties: string[];

@@ -27,11 +27,13 @@ export default async function RootLayout({
   params,
 }: {
   children: React.ReactNode;
-  params: { locale: Locale } | Promise<{ locale: Locale }>;
+  // Next may provide params as a Promise whose inner `locale` is typed as `string`.
+  // Accept a flexible shape and coerce to our `Locale` union below.
+  params: any | Promise<any>;
 }) {
-  // Next may provide `params` as a Promise in some rendering paths — await safely.
-  const resolvedParams = (params && typeof (params as any)?.then === 'function') ? await params : params;
-  const lang = (resolvedParams as { locale: Locale }).locale;
+  const resolvedParams = params && typeof params.then === "function" ? await params : params;
+  const rawLocale = (resolvedParams && resolvedParams.locale) ? String(resolvedParams.locale) : "en";
+  const lang: Locale = rawLocale === "ar" ? "ar" : "en";
   const dir = lang === "ar" ? "rtl" : "ltr";
 
   return (
