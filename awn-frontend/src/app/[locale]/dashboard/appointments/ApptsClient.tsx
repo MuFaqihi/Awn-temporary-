@@ -17,6 +17,7 @@ import { CalendarDays, Clock, MapPin, Star, Video, Home, Filter, Lightbulb, Cale
 import { Shield, AlertTriangle } from 'lucide-react';
 import { useMedicalHistoryStatus, getMedicalHistoryLabels } from '@/hooks/use-medical-history-status';
 import { createPortal } from 'react-dom';
+import { apiService } from '@/lib/api';
 
 type Props = { locale: Locale };
 
@@ -109,11 +110,66 @@ export default function ApptsClient({ locale }: Props) {
     setMounted(true);
   }, []);
 
+  // Fetch appointments from backend and apply a simple auth-guard
+  const [loading, setLoading] = React.useState(true);
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        // Redirect to locale-aware login page when not authenticated
+        window.location.href = `/${locale}/login`;
+        return;
+      }
+    }
+
+    let cancelled = false;
+
+    const load = async () => {
+      try {
+        setLoading(true);
+        const res: any = await apiService.getAppointments();
+
+        const items = Array.isArray(res) ? res : (res?.data || []);
+
+        const mapped: Appointment[] = (items || []).map((it: any) => {
+          const therapistFromApi = it.therapists || it.therapist || null;
+          // try to resolve a therapist object from local data when only an id/slug is present
+          const resolvedLocal = dataTherapists.find(t => String(t.id) === String(it.therapist_id) || String(t.slug) === String(it.therapist_id)) || null;
+          return ({
+            id: String(it.id),
+            therapistId: it.therapist_id || it.therapistId || (therapistFromApi?.id) || '',
+            date: it.date || it.booking_date || (it.created_at ? it.created_at.split("T")[0] : ''),
+            time: it.time || it.booking_time || '',
+            kind: (it.kind || it.session_type || 'home') as 'online' | 'home',
+            status: (it.status || 'upcoming') as Appointment['status'],
+            meetLink: it.meet_link || it.meetLink || undefined,
+            // preserve nested therapist info when present (bookings/joins)
+            therapists: therapistFromApi || null,
+            // helper to resolve therapist later in render
+            __resolvedTherapist: therapistFromApi || resolvedLocal
+          });
+        });
+
+        if (cancelled) return;
+
+        setUpcomingAppointments(mapped.filter(m => m.status === 'upcoming' || m.status === 'pending'));
+        setPastAppointments(mapped.filter(m => m.status === 'completed'));
+        setCancelledAppointments(mapped.filter(m => m.status === 'cancelled'));
+      } catch (error) {
+        console.error('Failed to load appointments', error);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+
+    load();
+
+    return () => { cancelled = true; };
+  }, [locale]);
+
   const handleReschedule = async (appointmentId: string, newDate: Date, newTime: string, mode: string, note?: string) => {
     console.log("Rescheduling appointment:", appointmentId, { newDate, newTime, mode, note });
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Update the appointment in the upcoming list
+    // Optimistic UI update
     setUpcomingAppointments(prev => prev.map(apt => 
       apt.id === appointmentId 
         ? { 
@@ -124,25 +180,77 @@ export default function ApptsClient({ locale }: Props) {
           }
         : apt
     ));
-    
-    console.log(ar ? "تمت إعادة الجدولة بنجاح" : "Rescheduled successfully");
+
+    try {
+      const payload = {
+        date: newDate.toISOString().split('T')[0],
+        time: newTime,
+        kind: mode,
+        note: note || ''
+      };
+
+      await apiService.rescheduleAppointment(appointmentId, payload);
+      console.log(ar ? "تمت إعادة الجدولة بنجاح" : "Rescheduled successfully");
+    } catch (err) {
+      console.error('Reschedule failed, reverting UI', err);
+      // On failure, refetch appointments or revert optimistic update. For simplicity, remove optimistic change by refetching.
+      try {
+        const res: any = await apiService.getAppointments();
+        const items = Array.isArray(res) ? res : (res?.data || []);
+        const mapped: Appointment[] = (items || []).map((it: any) => ({
+          id: String(it.id),
+          therapistId: it.therapist_id || it.therapistId || (it.therapists?.id) || '',
+          date: it.date || it.booking_date || (it.created_at ? it.created_at.split('T')[0] : ''),
+          time: it.time || it.booking_time || '',
+          kind: (it.kind || it.session_type || 'home') as 'online' | 'home',
+          status: (it.status || 'upcoming') as Appointment['status'],
+          meetLink: it.meet_link || it.meetLink || undefined,
+        }));
+
+        setUpcomingAppointments(mapped.filter(m => m.status === 'upcoming' || m.status === 'pending'));
+      } catch (e) {
+        console.error('Failed to reload appointments after reschedule error', e);
+      }
+    }
   };
 
   const handleCancel = (appointmentId: string) => {
     console.log("Cancelling appointment:", appointmentId);
-    
-    // Find the appointment in upcoming list
+    // Optimistic UI update: move to cancelled
     const appointmentToCancel = upcomingAppointments.find(apt => apt.id === appointmentId);
-    
     if (appointmentToCancel) {
-      // Add to cancelled list with updated status
-      setCancelledAppointments(prev => [...prev, { ...appointmentToCancel, status: "cancelled" }]);
-      
-      // Remove from upcoming list
+      setCancelledAppointments(prev => [...prev, { ...appointmentToCancel, status: 'cancelled' }]);
       setUpcomingAppointments(prev => prev.filter(apt => apt.id !== appointmentId));
     }
-    
-    console.log(ar ? "تم إلغاء الموعد" : "Appointment cancelled");
+
+    (async () => {
+      try {
+        await apiService.cancelAppointment(appointmentId);
+        console.log(ar ? 'تم إلغاء الموعد' : 'Appointment cancelled');
+      } catch (err) {
+        console.error('Cancel failed, reverting UI', err);
+        // Re-fetch appointments to restore correct state
+        try {
+          const res: any = await apiService.getAppointments();
+          const items = Array.isArray(res) ? res : (res?.data || []);
+          const mapped: Appointment[] = (items || []).map((it: any) => ({
+            id: String(it.id),
+            therapistId: it.therapist_id || it.therapistId || (it.therapists?.id) || '',
+            date: it.date || it.booking_date || (it.created_at ? it.created_at.split('T')[0] : ''),
+            time: it.time || it.booking_time || '',
+            kind: (it.kind || it.session_type || 'home') as 'online' | 'home',
+            status: (it.status || 'upcoming') as Appointment['status'],
+            meetLink: it.meet_link || it.meetLink || undefined,
+          }));
+
+          setUpcomingAppointments(mapped.filter(m => m.status === 'upcoming' || m.status === 'pending'));
+          setPastAppointments(mapped.filter(m => m.status === 'completed'));
+          setCancelledAppointments(mapped.filter(m => m.status === 'cancelled'));
+        } catch (e) {
+          console.error('Failed to reload appointments after cancel error', e);
+        }
+      }
+    })();
   };
 
   const handleNewAppointment = () => {
@@ -171,23 +279,27 @@ export default function ApptsClient({ locale }: Props) {
 
   const handleFeedbackSubmit = async (appointmentId: string) => {
     setSubmittingFeedback(prev => ({ ...prev, [appointmentId]: true }));
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    console.log("Feedback submitted:", appointmentId, {
-      ratings: feedbackRatings[appointmentId],
-      text: feedbackTexts[appointmentId]
-    });
-    
-    setSubmittingFeedback(prev => ({ ...prev, [appointmentId]: false }));
-    setFeedbackSuccess(prev => ({ ...prev, [appointmentId]: true }));
-    
-    // Close feedback form after 2 seconds
-    setTimeout(() => {
-      setActiveFeedbackId(null);
-      setFeedbackSuccess(prev => ({ ...prev, [appointmentId]: false }));
-    }, 2000);
+
+    try {
+      const payload = {
+        ratings: feedbackRatings[appointmentId] || {},
+        text: feedbackTexts[appointmentId] || ''
+      };
+
+      await apiService.submitFeedback(appointmentId, payload);
+
+      setSubmittingFeedback(prev => ({ ...prev, [appointmentId]: false }));
+      setFeedbackSuccess(prev => ({ ...prev, [appointmentId]: true }));
+
+      // Close feedback form after 2 seconds
+      setTimeout(() => {
+        setActiveFeedbackId(null);
+        setFeedbackSuccess(prev => ({ ...prev, [appointmentId]: false }));
+      }, 2000);
+    } catch (err) {
+      console.error('Submit feedback failed', err);
+      setSubmittingFeedback(prev => ({ ...prev, [appointmentId]: false }));
+    }
   };
 
   const handleRebook = (appointment: Appointment) => {
@@ -499,7 +611,13 @@ export default function ApptsClient({ locale }: Props) {
   }, [activeFeedbackId, feedbackRatings, feedbackTexts, feedbackSuccess, submittingFeedback, mounted, ar]);
 
   const renderAppointmentCard = (appointment: Appointment, showActions: boolean = false) => {
-    const therapist = getTherapistById(appointment.therapistId);
+    // prefer API-provided therapist object (appointment.therapists or __resolvedTherapist)
+    const apiTher = (appointment as any).therapists || (appointment as any).__resolvedTherapist || null;
+    const therapist = apiTher ? {
+      name: { en: apiTher.name_en || apiTher.name || '', ar: apiTher.name_ar || apiTher.name_ar || '' },
+      specialties: apiTher.specialties || [],
+      image: apiTher.avatar_url || apiTher.avatar || apiTher.image || apiTher.image_url || undefined
+    } : getTherapistById(appointment.therapistId);
     const hasRating = ratings[appointment.id] > 0;
     const showFeedbackButton = showFeedback[appointment.id] && hasRating;
     
@@ -870,7 +988,15 @@ export default function ApptsClient({ locale }: Props) {
 
       {/* Content */}
       <div>
-        {currentAppointments.length === 0 ? (
+        {loading ? (
+          <Card className="text-center py-12 sm:py-16 bg-gradient-to-b from-gray-50 to-white">
+            <div className="max-w-md mx-auto px-4">
+              <div className="mx-auto h-12 w-12 border-4 border-teal-600 border-t-transparent rounded-full animate-spin mb-4" />
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3">{ar ? 'جاري جلب المواعيد...' : 'Loading appointments...'}</h3>
+              <p className="text-gray-600 mb-6 leading-relaxed text-sm sm:text-base">{ar ? 'الرجاء الانتظار بينما نصل ببيانات مواعيدك' : 'Please wait while we fetch your appointments'}</p>
+            </div>
+          </Card>
+        ) : currentAppointments.length === 0 ? (
           <Card className="text-center py-12 sm:py-16 bg-gradient-to-b from-gray-50 to-white">
             <div className="max-w-md mx-auto px-4">
               {activeFilter === 'upcoming' ? (

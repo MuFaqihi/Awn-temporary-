@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import { Shield, Download, Trash2 } from 'lucide-react';
 import { useMedicalHistoryStatus, getMedicalHistoryLabels } from '@/hooks/use-medical-history-status';
+import { apiService } from '@/lib/api';
 
 // Dynamically import the map to avoid SSR issues
 const DynamicMap = dynamic(() => import('@/components/MapComponent'), { ssr: false });
@@ -215,17 +216,17 @@ export default function SettingsClient({ locale }: { locale: Locale }) {
   const labels = getMedicalHistoryLabels(locale);
   
   // Basic user info
-  const [firstName, setFirstName] = React.useState(ar ? 'أحمد' : 'Ahmed');
-  const [lastName, setLastName] = React.useState(ar ? 'محمد' : 'Mohammed');
-  const [email, setEmail] = React.useState('ahmed.mohammed@example.com');
-  const [phone, setPhone] = React.useState('+966 50 123 4567');
+  const [firstName, setFirstName] = React.useState('');
+  const [lastName, setLastName] = React.useState('');
+  const [email, setEmail] = React.useState('');
+  const [phone, setPhone] = React.useState('');
   
   // New profile fields
-  const [nationalId, setNationalId] = React.useState('1234567890');
-  const [location, setLocation] = React.useState(ar ? 'شارع الملك فهد، حي الملز، الرياض' : 'King Fahd Road, Al Malaz District, Riyadh');
-  const [locationCoords, setLocationCoords] = React.useState<{ lat: number; lng: number }>({ lat: 24.7136, lng: 46.6753 });
-  const [dateOfBirth, setDateOfBirth] = React.useState('1990-01-15');
-  const [maritalStatus, setMaritalStatus] = React.useState('single');
+  const [nationalId, setNationalId] = React.useState('');
+  const [location, setLocation] = React.useState('');
+  const [locationCoords, setLocationCoords] = React.useState<{ lat: number; lng: number } | null>(null);
+  const [dateOfBirth, setDateOfBirth] = React.useState('');
+  const [maritalStatus, setMaritalStatus] = React.useState('');
   
   // Map state
   const [showMap, setShowMap] = React.useState(false);
@@ -237,6 +238,7 @@ export default function SettingsClient({ locale }: { locale: Locale }) {
   
   // Password change
   const [showPassword, setShowPassword] = React.useState(false);
+  const [showNewPassword, setShowNewPassword] = React.useState(false);
   const [currentPassword, setCurrentPassword] = React.useState('');
   const [newPassword, setNewPassword] = React.useState('');
   
@@ -247,6 +249,39 @@ export default function SettingsClient({ locale }: { locale: Locale }) {
   // Loading state
   const [isLoading, setIsLoading] = React.useState(false);
 
+  // Load current settings from backend
+  React.useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        setIsLoading(true);
+        const res: any = await apiService.getSettings();
+        const data = res?.data || res || {};
+        if (cancelled) return;
+
+        setFirstName(data.first_name || data.firstName || firstName || '');
+        setLastName(data.last_name || data.lastName || lastName || '');
+        setEmail(data.email || email || '');
+        setPhone(data.phone || phone || '');
+        setNationalId(data.national_id || data.nationalId || nationalId || '');
+        setLocation(data.address || data.location || location || '');
+        setDateOfBirth(data.date_of_birth || data.dateOfBirth || dateOfBirth || '');
+        setMaritalStatus(data.marital_status || data.maritalStatus || maritalStatus || '');
+        if (data.city) setLocationCoords((c) => c); // keep coords unchanged; server doesn't provide coords
+        setLanguage(data.language || language);
+        setEmailNotifications(Boolean(data.notification_email ?? emailNotifications));
+        setSmsNotifications(Boolean(data.notification_sms ?? smsNotifications));
+        setAllowTherapistAccess(Boolean(data.allow_history_access ?? allowTherapistAccess));
+      } catch (err) {
+        console.warn('Failed to load settings from backend, using local defaults', err);
+      } finally {
+        if (!cancelled) setIsLoading(false);
+      }
+    })();
+
+    return () => { cancelled = true; };
+  }, []);
+
   const handleLocationSelect = (address: string, coordinates: { lat: number; lng: number }) => {
     setLocation(address);
     setLocationCoords(coordinates);
@@ -254,26 +289,37 @@ export default function SettingsClient({ locale }: { locale: Locale }) {
 
   const handleSaveProfile = async () => {
     setIsLoading(true);
-    
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Show success toast
+      const payload: any = {
+        first_name: firstName,
+        last_name: lastName,
+        phone,
+        address: location,
+        national_id: nationalId,
+        date_of_birth: dateOfBirth,
+        marital_status: maritalStatus
+      };
+
+      // Include notification preferences
+      payload.notification_email = Boolean(emailNotifications);
+      payload.notification_sms = Boolean(smsNotifications);
+      payload.allow_history_access = Boolean(allowTherapistAccess);
+
+      const res: any = await apiService.updateSettings(payload);
+      if (res && res.success === false) throw new Error(res.error || 'Failed to save');
+
       toastManager.add({
         title: ar ? 'تم حفظ البيانات بنجاح' : 'Profile saved successfully',
         description: ar ? 'تم تحديث معلوماتك الشخصية' : 'Your profile information has been updated',
         type: 'success',
         timeout: 3000,
       });
-      
-    } catch (error) {
-      // Show error toast
+    } catch (error: any) {
       toastManager.add({
         title: ar ? 'خطأ في حفظ البيانات' : 'Error saving profile',
-        description: ar ? 'حدث خطأ أثناء حفظ البيانات' : 'An error occurred while saving your profile',
+        description: String(error?.message || error) || (ar ? 'حدث خطأ أثناء حفظ البيانات' : 'An error occurred while saving your profile'),
         type: 'error',
-        timeout: 3000,
+        timeout: 5000,
       });
     } finally {
       setIsLoading(false);
@@ -290,30 +336,27 @@ export default function SettingsClient({ locale }: { locale: Locale }) {
       });
       return;
     }
-    
+
     setIsLoading(true);
-    
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Show success toast
+      const res: any = await apiService.changePassword({ currentPassword, newPassword });
+      if (res && res.success === false) throw new Error(res.error || 'Failed to change password');
+
       toastManager.add({
         title: ar ? 'تم تغيير كلمة المرور' : 'Password changed successfully',
         description: ar ? 'تم تحديث كلمة المرور بنجاح' : 'Your password has been updated successfully',
         type: 'success',
         timeout: 3000,
       });
-      
+
       setCurrentPassword('');
       setNewPassword('');
-      
-    } catch (error) {
+    } catch (error: any) {
       toastManager.add({
         title: ar ? 'خطأ في تغيير كلمة المرور' : 'Password change failed',
-        description: ar ? 'حدث خطأ أثناء تغيير كلمة المرور' : 'An error occurred while changing your password',
+        description: String(error?.message || error) || (ar ? 'حدث خطأ أثناء تغيير كلمة المرور' : 'An error occurred while changing your password'),
         type: 'error',
-        timeout: 3000,
+        timeout: 5000,
       });
     } finally {
       setIsLoading(false);
@@ -691,14 +734,23 @@ export default function SettingsClient({ locale }: { locale: Locale }) {
               <Label htmlFor="newPassword" className="text-gray-700 font-medium">
                 {ar ? "كلمة المرور الجديدة" : "New Password"}
               </Label>
-              <Input
-                id="newPassword"
-                type="password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                placeholder={ar ? "أدخل كلمة المرور الجديدة" : "Enter new password"}
-                className="mt-1 bg-white border-gray-300"
-              />
+              <div className="relative mt-1">
+                <Input
+                  id="newPassword"
+                  type={showNewPassword ? "text" : "password"}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder={ar ? "أدخل كلمة المرور الجديدة" : "Enter new password"}
+                  className="bg-white border-gray-300"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                >
+                  {showNewPassword ? <EyeOff className="h-4 w-4 text-gray-400" /> : <Eye className="h-4 w-4 text-gray-400" />}
+                </button>
+              </div>
             </div>
 
             <Button 

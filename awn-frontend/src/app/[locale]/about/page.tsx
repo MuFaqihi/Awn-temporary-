@@ -8,10 +8,9 @@ import { Search, Calendar, Heart, Users, Shield, Clock } from "lucide-react";
 export default function AboutPage({
   params,
 }: {
-  //   Next.js 15: params is a Promise — unwrap with React.use()
-  params: Promise<{ locale: Locale }>;
+  params: { locale: Locale };
 }) {
-  const { locale } = use(params);
+  const locale = params.locale;
   const ar = locale === "ar";
   const base = `/${locale}`;
 

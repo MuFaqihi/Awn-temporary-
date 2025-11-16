@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogFooter, AlertDialogAction, AlertDialogCancel } from "@/components/ui/alert-dialog";
 import { GradientSlideButton } from "@/components/ui/gradient-slide-button";
 import { getTherapistById } from "@/lib/therapists";
+import { apiService } from '@/lib/api';
 import type { TreatmentPlan } from "@/lib/types";
 import { toastManager } from "@/hooks/use-toast";
 import { Calendar, CheckCircle, Clock, User, FileText, Activity, BarChart3, MessageCircle, ChevronDown, ChevronUp, Filter, Lightbulb, Users } from "lucide-react";
@@ -22,52 +23,61 @@ export default function PlansClient({ locale }: { locale: Locale }) {
   // Medical History integration
   const medicalHistory = useMedicalHistoryStatus();
   const labels = getMedicalHistoryLabels(locale);
+
+  function normalizeImage(src?: string) {
+    if (!src) return '';
+    try {
+      if (src.startsWith('/therapists/')) {
+        const parts = src.split('/');
+        const base = parts[parts.length - 1];
+        return base ? `/${base}` : src;
+      }
+    } catch (e) {}
+    return src;
+  }
   
-  const [plans, setPlans] = React.useState<TreatmentPlan[]>([
-    {
-      id: "thamer-alshahrani",
-      therapistId: "thamer-alshahrani",
-      title: ar ? "خطة علاج إصابة الكتف" : "Shoulder Injury Treatment Plan",
-      steps: [
-        ar ? "جلسة تقييم أولية" : "Initial assessment session",
-        ar ? "جلسة تمارين تقوية العضلات" : "Muscle strengthening session", 
-        ar ? "جلسة العلاج اليدوي" : "Manual therapy session",
-        ar ? "جلسة تمارين المرونة" : "Flexibility training session",
-        ar ? "جلسة متابعة أسبوعية" : "Weekly follow-up session"
-      ],
-      status: "proposed",
-      createdAt: "2025-11-01",
-    },
-    {
-      id: "abdullah-alshahrani",
-      therapistId: "abdullah-alshahrani",
-      title: ar ? "برنامج تأهيل الركبة" : "Knee Rehabilitation Program",
-      steps: [
-        ar ? "جلسة تقييم شامل للركبة" : "Comprehensive knee assessment session",
-        ar ? "جلسة تخفيف الالتهاب" : "Inflammation reduction session", 
-        ar ? "جلسة استعادة المدى الحركي" : "Range of motion restoration session",
-        ar ? "جلسة تقوية العضلات المحيطة" : "Surrounding muscle strengthening session",
-        ar ? "جلسة تدريبات التوازن" : "Balance training session"
-      ],
-      status: "accepted",
-      completedSteps: 2,
-      createdAt: "2025-10-25",
-    },
-    {
-      id: "alaa-ahmed",
-      therapistId: "faisal-almutairi",
-      title: ar ? "خطة علاج الظهر" : "Back Pain Treatment Plan",
-      steps: [
-        ar ? "جلسة تقييم أولي للعمود الفقري" : "Initial spine assessment session",
-        ar ? "جلسة تمارين تقوية الجذع" : "Core strengthening session",
-        ar ? "جلسة تقنيات الاسترخاء" : "Relaxation techniques session",
-        ar ? "جلسة تصحيح الوضعية" : "Posture correction session"
-      ],
-      status: "completed",
-      completedSteps: 4,
-      createdAt: "2025-10-15",
-    },
-  ]);
+  const [plans, setPlans] = React.useState<TreatmentPlan[]>([]);
+  const [loadingPlans, setLoadingPlans] = React.useState(true);
+
+  React.useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const raw = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
+        const user = raw ? JSON.parse(raw || '{}') : null;
+        const patientId = user?.id || user?.userId || null;
+        if (!patientId) {
+          setPlans([]);
+          return;
+        }
+
+        const res: any = await apiService.getTreatmentPlans(patientId);
+        if (cancelled) return;
+        if (res && res.success && res.data && Array.isArray(res.data.plans)) {
+          const serverPlans = res.data.plans.map((p: any) => ({
+            id: p.id || p.plan_id || String(Math.random()),
+            therapistId: p.therapist_id || p.therapistId || (p.therapists && p.therapists.id) || '',
+            title: p.title || p.name || '',
+            steps: Array.isArray(p.steps) ? p.steps : (p.steps ? [p.steps] : []),
+            status: p.status || 'proposed',
+            completedSteps: p.completed_steps || p.completedSteps || 0,
+            createdAt: p.created_at || p.createdAt,
+            therapist: p.therapists || p.therapist || null
+          }));
+          setPlans(serverPlans);
+        } else {
+          setPlans([]);
+        }
+      } catch (err) {
+        console.error('Failed to load treatment plans', err);
+        setPlans([]);
+      } finally {
+        setLoadingPlans(false);
+      }
+    })();
+
+    return () => { cancelled = true };
+  }, [locale]);
 
   const handleAcceptPlan = (planId: string) => {
     // Check medical history before accepting plan
@@ -248,7 +258,8 @@ export default function PlansClient({ locale }: { locale: Locale }) {
   ];
 
   const renderPlanCard = (plan: TreatmentPlan) => {
-    const therapist = getTherapistById(plan.therapistId);
+    // therapist may be provided by server (plan.therapist) or fallback to local data
+    const therapist = (plan as any).therapist || getTherapistById(plan.therapistId);
     const progressPercentage = plan.completedSteps ? Math.round((plan.completedSteps / plan.steps.length) * 100) : 0;
     const isExpanded = expandedSessions[plan.id];
     const showToggle = plan.steps.length > 3 && plan.status !== 'proposed';
@@ -305,16 +316,16 @@ export default function PlansClient({ locale }: { locale: Locale }) {
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
             <div className="flex items-center gap-3 min-w-0 flex-1">
               <img 
-                src={therapist?.image || "/avatar-placeholder.jpg"} 
+                src={normalizeImage((therapist as any)?.avatar_url || (therapist as any)?.image || ((therapist as any)?.avatar)) || "/avatar-placeholder.jpg"} 
                 className="h-10 w-10 sm:h-12 sm:w-12 rounded-full object-cover ring-2 ring-gray-100 group-hover:ring-blue-200 transition-all duration-300 flex-shrink-0" 
-                alt={therapist?.name.en || "Therapist"} 
+                alt={(therapist as any)?.name?.en || (therapist as any)?.name_en || "Therapist"} 
               />
               <div className="min-w-0 flex-1">
                 <div className="font-semibold text-gray-900 text-sm sm:text-base break-words">
-                  {ar ? therapist?.name.ar : therapist?.name.en}
+                  {ar ? (therapist as any)?.name?.ar || (therapist as any)?.name_ar : (therapist as any)?.name?.en || (therapist as any)?.name_en}
                 </div>
                 <div className="text-xs sm:text-sm text-gray-500 break-words">
-                  {ar ? therapist?.specialties[1] : therapist?.specialties[0]}
+                  {ar ? (therapist as any)?.specialty_ar || ((therapist as any)?.specialties && (therapist as any).specialties[1]) : (therapist as any)?.specialty_en || ((therapist as any)?.specialties && (therapist as any).specialties[0])}
                 </div>
                 {/* Therapist reviewed medical history indicator */}
                 {medicalHistory.isComplete && (plan.status === 'accepted' || plan.status === 'completed') && (

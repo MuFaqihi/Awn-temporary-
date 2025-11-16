@@ -18,6 +18,7 @@ import SetupGoalsConsent from './setup/SetupGoalsConsent';
 interface Props {
   locale: Locale;
   onComplete: () => void;
+  onSave?: (data: StepData) => Promise<void> | void;
 }
 
 interface StepData {
@@ -207,8 +208,19 @@ export default function MedicalHistorySetup({ locale, onComplete }: Props) {
         setCompletedSteps(prev => [...prev, currentStep]);
       }
       
-      console.log('Medical history setup completed:', stepData);
-      onComplete();
+      (async () => {
+        try {
+          if (typeof (onSave) === 'function') {
+            await onSave(stepData as StepData);
+          }
+        } catch (e) {
+          console.error('Failed to save medical history in setup:', e);
+          showToast(ar ? 'فشل في الحفظ' : 'Save failed', ar ? 'تعذر حفظ التاريخ الطبي. حاول مجدداً.' : 'Unable to save medical history. Please try again.', 'error');
+        } finally {
+          console.log('Medical history setup completed:', stepData);
+          onComplete();
+        }
+      })();
     }
   }, [currentStep, stepData, completedSteps, validateStep, onComplete]);
 

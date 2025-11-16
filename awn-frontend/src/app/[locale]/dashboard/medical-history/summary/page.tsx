@@ -5,17 +5,17 @@ import DashboardLayout from '@/components/DashboardLayout';
 import MedicalHistorySummary from '@/components/medical-history/MedicalHistorySummary';
 
 interface Props {
-  params: Promise<{
+  params: {
     locale: Locale;
-  }>;
+  };
 }
 
 export default function MedicalHistorySummaryPage({ params }: Props) {
-  const resolvedParams = React.use(params);
+  const locale = params.locale;
   
   return (
     <DashboardLayout locale={resolvedParams.locale}>
-      <MedicalHistorySummary locale={resolvedParams.locale} />
+      <MedicalHistorySummary locale={locale} />
     </DashboardLayout>
   );
 }

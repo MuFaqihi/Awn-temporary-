@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 import { CalendarDays, Heart, Settings, ClipboardList, User } from "lucide-react";
+import { FileText } from "lucide-react";
 import { IconBrandTabler, IconArrowLeft } from "@tabler/icons-react";
 import { motion } from "motion/react";
 
@@ -46,6 +47,23 @@ const LogoIcon = () => {
 export default function DashboardLayout({ children, locale }: DashboardLayoutProps) {
   const ar = locale === "ar";
   const [open, setOpen] = useState(false);
+  const [profileLabel, setProfileLabel] = useState('');
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('user');
+      if (!raw) return setProfileLabel('');
+      const u = JSON.parse(raw || '{}');
+      const first = u.first_name || u.firstName || u.first || '';
+      const last = u.last_name || u.lastName || u.last || '';
+      const full = u.name || u.full_name || `${first} ${last}`.trim();
+      const name = (full && String(full).trim()) || first || last || '';
+      setProfileLabel(name || '');
+    } catch (err) {
+      console.error('Failed to parse user for sidebar label', err);
+      setProfileLabel('');
+    }
+  }, []);
 
   useEffect(() => {
     const loggedIn = localStorage.getItem("isLoggedIn");
@@ -68,6 +86,13 @@ export default function DashboardLayout({ children, locale }: DashboardLayoutPro
       href: `/${locale}/dashboard/appointments`,
       icon: (
         <CalendarDays className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
+      ),
+    },
+    {
+      label: ar ? "البيانات الطبية" : "Medical History",
+      href: `/${locale}/dashboard/medical-history`,
+      icon: (
+        <FileText className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
     {
@@ -115,7 +140,7 @@ export default function DashboardLayout({ children, locale }: DashboardLayoutPro
           <div>
             <SidebarLink
               link={{
-                label: "Rawan",
+                label: profileLabel || (ar ? 'الإعدادات' : 'Profile'),
                 href: `/${locale}/dashboard/settings`,
                 icon: (
                   <User className="h-7 w-7 shrink-0 text-neutral-700 dark:text-neutral-200" />

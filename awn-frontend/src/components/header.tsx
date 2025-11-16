@@ -64,22 +64,58 @@ export default function SiteHeader({ locale = 'ar' }: { locale?: Locale }) {
   const isRTL = locale === 'ar';
   const nav = isRTL ? NAV_AR : NAV_EN;
   const [open, setOpen] = React.useState(false);
-
   const otherLocale: Locale = locale === 'ar' ? 'en' : 'ar';
   const langHref = swapLocale(pathname, otherLocale);
 
-  const userLoggedIn = isLoggedIn(pathname);
-  const userType = getUserType(pathname);
+  // derive logged-in state from stored token/user so it is global across pages
+  const [userLoggedIn, setUserLoggedIn] = React.useState<boolean>(false);
+  const [userType, setUserType] = React.useState<'client' | 'therapist' | null>(null);
+
+  React.useEffect(() => {
+    const check = () => {
+      try {
+        const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+        const user = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
+        setUserLoggedIn(!!token);
+        if (user) {
+          const parsed = JSON.parse(user);
+          setUserType(parsed?.role === 'therapist' ? 'therapist' : 'client');
+        } else {
+          setUserType(null);
+        }
+      } catch (e) {
+        setUserLoggedIn(false);
+        setUserType(null);
+      }
+    };
+
+    check();
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === 'token' || e.key === 'user' || e.key === null) check();
+    };
+    const onAuthChange = () => check();
+    window.addEventListener('storage', onStorage);
+    window.addEventListener('auth-change', onAuthChange as EventListener);
+    return () => {
+      window.removeEventListener('storage', onStorage);
+      window.removeEventListener('auth-change', onAuthChange as EventListener);
+    };
+  }, []);
 
   const linkBase =
     'text-primary-foreground/90 transition-colors hover:text-link-hover dark:hover:text-white relative underline-offset-8 decoration-2 decoration-link-hover/30 hover:underline';
 
   // Handle logout
   function handleLogout() {
-    // Clear any stored auth data (localStorage, cookies, etc.)
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('userEmail');
-    localStorage.removeItem('userType');
+    // Clear stored auth data (localStorage)
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('isLoggedIn');
+    // Notify other components in the same window that auth changed
+    try { window.dispatchEvent(new Event('auth-change')); } catch (e) {}
+    // update state immediately
+    setUserLoggedIn(false);
+    setUserType(null);
     
     // Redirect to home page
     router.push(`/${locale}`);
@@ -126,21 +162,38 @@ export default function SiteHeader({ locale = 'ar' }: { locale?: Locale }) {
             <div className="hidden lg:flex items-center gap-2">
               {/* Login/Logout Button */}
               {userLoggedIn ? (
-                <Button
-                  onClick={handleLogout}
-                  size="sm"
-                  className={cx(
-                    'font-medium',
-                    'bg-red-600 text-white',
-                    'transition-all duration-200',
-                    'hover:bg-red-700 active:bg-red-800',
-                    'hover:-translate-y-0.5 hover:shadow-md active:translate-y-0',
-                    'rounded-md'
-                  )}
-                >
-                  <LogOut className="w-4 h-4 mr-2" />
-                  {isRTL ? 'تسجيل الخروج' : 'Logout'}
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button
+                    asChild
+                    size="sm"
+                    className={cx(
+                      'font-medium',
+                      'bg-[var(--cta,#013D5B)] text-[var(--cta-foreground,#fff)]',
+                      'transition-all duration-200',
+                      'hover:bg-[#013D5B]/90 active:bg-[#013D5B]',
+                      'hover:-translate-y-0.5 hover:shadow-md active:translate-y-0',
+                      'rounded-md'
+                    )}
+                  >
+                    <Link href={`/${locale}/dashboard`}>{isRTL ? 'لوحة التحكم' : 'Dashboard'}</Link>
+                  </Button>
+
+                  <Button
+                    onClick={handleLogout}
+                    size="sm"
+                    className={cx(
+                      'font-medium',
+                      'bg-red-600 text-white',
+                      'transition-all duration-200',
+                      'hover:bg-red-700 active:bg-red-800',
+                      'hover:-translate-y-0.5 hover:shadow-md active:translate-y-0',
+                      'rounded-md'
+                    )}
+                  >
+                    <LogOut className="w-4 h-4 mr-2" />
+                    {isRTL ? 'تسجيل الخروج' : 'Logout'}
+                  </Button>
+                </div>
               ) : (
                 <Button
                   asChild
@@ -215,22 +268,33 @@ export default function SiteHeader({ locale = 'ar' }: { locale?: Locale }) {
               </ul>
 
               <div className="flex items-center gap-2">
-                {/* Mobile Login/Logout Button */}
+                {/* Mobile Dashboard + Login/Logout Buttons */}
                 {userLoggedIn ? (
-                  <Button
-                    onClick={handleLogout}
-                    size="sm"
-                    className={cx(
-                      'font-medium',
-                      'bg-red-600 text-white',
-                      'transition-all duration-200',
-                      'hover:bg-red-700 active:bg-red-800',
-                      'rounded-md'
-                    )}
-                  >
-                    <LogOut className="w-4 h-4 mr-2" />
-                    {isRTL ? 'تسجيل الخروج' : 'Logout'}
-                  </Button>
+                  <>
+                    <Button
+                      asChild
+                      size="sm"
+                      className="font-medium bg-[var(--cta,#013D5B)] text-white hover:bg-[#013D5B]/90 transition-all rounded-md"
+                    >
+                      <Link href={`/${locale}/dashboard`} onClick={() => setOpen(false)}>
+                        {isRTL ? 'لوحة التحكم' : 'Dashboard'}
+                      </Link>
+                    </Button>
+                    <Button
+                      onClick={handleLogout}
+                      size="sm"
+                      className={cx(
+                        'font-medium',
+                        'bg-red-600 text-white',
+                        'transition-all duration-200',
+                        'hover:bg-red-700 active:bg-red-800',
+                        'rounded-md'
+                      )}
+                    >
+                      <LogOut className="w-4 h-4 mr-2" />
+                      {isRTL ? 'تسجيل الخروج' : 'Logout'}
+                    </Button>
+                  </>
                 ) : (
                   <Button
                     asChild

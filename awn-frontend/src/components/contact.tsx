@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
+import { API_BASE_URL } from '@/lib/api'
 
 type Locale = "ar" | "en";
 
@@ -55,7 +56,7 @@ export default function ContactSection({ locale = "ar" }: { locale?: Locale }) {
         locale: locale
       };
 //هنا الاتصال مع الباك عبر الرابط
-      const response = await fetch('https://awn-backend.vercel.app/api/contacts', {
+      const response = await fetch(`${API_BASE_URL}/contacts`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

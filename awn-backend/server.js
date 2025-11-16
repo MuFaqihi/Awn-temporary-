@@ -5,7 +5,9 @@ const { createClient } = require('@supabase/supabase-js');
 require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
+
+const bcrypt = require('bcryptjs');
 
 // Supabase client
 const supabase = createClient(
@@ -38,8 +40,24 @@ const authenticateToken = (req, res, next) => {
 };
 
 // Middleware
+const allowedOrigins = [
+  process.env.FRONTEND_URL || 'http://localhost:3000',
+  'http://localhost:3001'
+];
+
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like curl, server-to-server)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      return callback(null, true);
+    }
+    // In development allow any localhost origin
+    if (process.env.NODE_ENV !== 'production' && origin.includes('localhost')) {
+      return callback(null, true);
+    }
+    return callback(new Error('Not allowed by CORS'));
+  },
   credentials: true
 }));
 app.use(express.json());
@@ -48,6 +66,16 @@ app.use(express.json());
 app.use('/api/therapists', require('./routes/therapists'));
 app.use('/api/therapist', require('./routes/therapist'));
 app.use('/api/booking', require('./routes/booking'));
+// Appointments (routes/appointments.js provides full CRUD: get/post/patch/cancel/reschedule)
+app.use('/api/appointments', require('./routes/appointments'));
+// Favorites
+app.use('/api/favorites', require('./routes/favorites'));
+// Settings
+app.use('/api/settings', require('./routes/settings'));
+// Medical history
+app.use('/api/medical-history', require('./routes/medical-history'));
+// Treatment plans
+app.use('/api/treatment-plans', require('./routes/treatment-plans'));
 
 //   AUTH - تسجيل الدخول والتسجيل
 app.post('/api/auth/signup', async (req, res) => {
@@ -56,17 +84,18 @@ app.post('/api/auth/signup', async (req, res) => {
     
     console.log('  تسجيل مريض جديد:', { first_name, email });
 
-    // إنشاء مريض في قاعدة البيانات
+    // تشفير كلمة المرور ثم إنشاء مريض في قاعدة البيانات
+    const hashedPassword = await bcrypt.hash(password, 10);
     const { data: patient, error } = await supabase
       .from('patients')
       .insert([
         {
           first_name,
           last_name, 
-          email,
+          email: String(email).toLowerCase(),
           phone,
           national_id: 'TEMP_' + Date.now(),
-          password_hash: password
+          password_hash: hashedPassword
         }
       ])
       .select()
@@ -94,7 +123,30 @@ app.post('/api/auth/signup', async (req, res) => {
     );
 
     console.log('  تم إنشاء المريض بنجاح:', patient.id);
-    
+
+    // Persist optional address/address_coords into patient row if provided.
+    try {
+      const addr = req.body.address;
+      const coords = req.body.address_coords;
+      if (addr || coords) {
+        // If the patients table actually has an `address` column, update it directly.
+        if (patient.hasOwnProperty('address')) {
+          await supabase.from('patients').update({ address: addr || null, address_coords: coords || null }).eq('id', patient.id);
+        } else {
+          // Fallback: store address/coords inside `medical_notes` JSON
+          let notes = {};
+          if (patient.medical_notes) {
+            try { notes = typeof patient.medical_notes === 'string' ? JSON.parse(patient.medical_notes) : patient.medical_notes; } catch (e) { notes = {}; }
+          }
+          if (addr) notes.address = addr;
+          if (coords) notes.address_coords = coords;
+          await supabase.from('patients').update({ medical_notes: JSON.stringify(notes) }).eq('id', patient.id);
+        }
+      }
+    } catch (e) {
+      console.warn('Failed to persist signup address fallback', e?.message || e);
+    }
+
     res.json({
       success: true,
       token: token,
@@ -123,11 +175,12 @@ app.post('/api/auth/login', async (req, res) => {
     console.log('  محاولة تسجيل دخول:', email);
 
     // البحث عن المريض
+    // match by lowercased email
     const { data: patient, error } = await supabase
       .from('patients')
       .select('*')
-      .eq('email', email)
-      .single();
+      .eq('email', String(email).toLowerCase())
+      .maybeSingle();
 
     if (error || !patient) {
       return res.status(401).json({
@@ -136,12 +189,38 @@ app.post('/api/auth/login', async (req, res) => {
       });
     }
 
-    // تحقق من كلمة المرور (مبسط)
-    if (patient.password_hash !== password) {
+    // تحقق من كلمة المرور باستخدام bcrypt, but tolerate legacy plain-text stored passwords
+    const stored = String(patient.password_hash || '');
+    let isValid = false;
+    try {
+      // legacy plain-text fallback
+      if (stored === String(password)) isValid = true;
+      else isValid = await bcrypt.compare(String(password), stored);
+    } catch (e) {
+      console.warn('Password compare failed:', e);
+      isValid = false;
+    }
+    if (!isValid) {
       return res.status(401).json({
         success: false,
         error: 'البريد الإلكتروني أو كلمة المرور غير صحيحة'
       });
+    }
+
+    // If the stored password was plain-text and matched, upgrade it to a bcrypt hash
+    try {
+      if (stored === String(password)) {
+        const newHash = await bcrypt.hash(String(password), 10);
+        const up = await supabase.from('patients')
+          .update({ password_hash: newHash })
+          .eq('id', patient.id)
+          .select()
+          .single();
+        if (up.error) console.warn('Failed to upgrade plaintext password to bcrypt hash', up.error);
+        else console.log('Upgraded plaintext password to bcrypt hash for', patient.email, 'result:', up.data || up);
+      }
+    } catch (e) {
+      console.warn('Failed to upgrade plaintext password to bcrypt hash', e?.message || e);
     }
 
     // إنشاء token
@@ -180,161 +259,7 @@ app.post('/api/auth/login', async (req, res) => {
   }
 });
 
-//   APPOINTMENTS - إدارة المواعيد
-app.get('/api/appointments', authenticateToken, async (req, res) => {
-  try {
-    const patientId = req.user.id;
-    console.log('  جلب مواعيد المريض:', patientId);
-
-    // البحث في appointments
-    const { data: appointments, error: aptError } = await supabase
-      .from('appointments')
-      .select(`
-        id,
-        patient_id,
-        therapist_id, 
-        date,
-        time,
-        kind,
-        status,
-        patient_notes,
-        meet_link,
-        created_at,
-        therapists (
-          name_ar,
-          name_en,
-          avatar_url
-        )
-      `)
-      .eq('patient_id', patientId)
-      .order('date', { ascending: true });
-
-    if (aptError) {
-      console.error(' خطأ في appointments:', aptError);
-    }
-
-    // البحث في bookings
-    const { data: bookings, error: bookError } = await supabase
-      .from('bookings')
-      .select(`
-        id,
-        therapist_id,
-        user_name,
-        user_email,
-        booking_date,
-        booking_time, 
-        session_type,
-        status,
-        notes,
-        created_at,
-        therapists (
-          name_ar, 
-          name_en,
-          avatar_url
-        )
-      `)
-      .eq('user_email', req.user.email)
-      .order('booking_date', { ascending: true });
-
-    if (bookError) {
-      console.error(' خطأ في bookings:', bookError);
-    }
-
-    // دمج النتائج
-    const allAppointments = [
-      ...(appointments || []).map(apt => ({
-        ...apt,
-        source: 'appointments'
-      })),
-      ...(bookings || []).map(book => ({
-        id: book.id,
-        therapist_id: book.therapist_id,
-        date: book.booking_date,
-        time: book.booking_time,
-        kind: book.session_type,
-        status: book.status,
-        note: book.notes,
-        created_at: book.created_at,
-        therapists: book.therapists,
-        source: 'bookings'
-      }))
-    ];
-
-    console.log(`  تم جلب ${allAppointments.length} موعد/حجز`);
-    
-    res.json({
-      success: true,
-      data: allAppointments,
-      count: allAppointments.length
-    });
-
-  } catch (error) {
-    console.error(' خطأ غير متوقع:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Internal server error'
-    });
-  }
-});
-
-app.post('/api/appointments', authenticateToken, async (req, res) => {
-  try {
-    const patientId = req.user.id;
-    const { therapistId, date, time, kind, note } = req.body;
-
-    console.log('  إنشاء موعد جديد:', { patientId, therapistId, date, time, kind });
-
-    // إنشاء الحجز في bookings
-    const { data: booking, error } = await supabase
-      .from('bookings')
-      .insert([
-        {
-          therapist_id: therapistId,
-          user_email: req.user.email,
-          user_name: `${req.user.first_name} ${req.user.last_name}`,
-          booking_date: date,
-          booking_time: time,
-          session_type: kind,
-          notes: note,
-          status: 'pending'
-        }
-      ])
-      .select()
-      .single();
-
-    if (error) {
-      console.error(' خطأ في إنشاء الحجز:', error);
-      return res.status(500).json({
-        success: false,
-        error: error.message
-      });
-    }
-
-    console.log('  تم إنشاء الحجز بنجاح:', booking.id);
-    
-    res.status(201).json({
-      success: true,
-      data: {
-        id: booking.id,
-        therapist_id: booking.therapist_id,
-        date: booking.booking_date,
-        time: booking.booking_time,
-        kind: booking.session_type,
-        status: booking.status,
-        note: booking.notes,
-        source: 'bookings'
-      },
-      message: 'تم إنشاء الحجز بنجاح وجاري انتظار الموافقة'
-    });
-
-  } catch (error) {
-    console.error(' خطأ غير متوقع:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Internal server error'
-    });
-  }
-});
+// Appointments are handled by routes/appointments.js mounted earlier.
 
 //   HEALTH CHECK
 app.get('/api/health', (req, res) => {
@@ -343,6 +268,24 @@ app.get('/api/health', (req, res) => {
     message: 'الباك إند يعمل!',
     timestamp: new Date().toISOString()
   });
+});
+
+// Root route - friendly HTML page with links to key endpoints
+app.get('/', (req, res) => {
+  res.send(`
+    <html>
+      <head><title>Awn Backend</title></head>
+      <body style="font-family:system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial; padding:24px">
+        <h1>Awn Backend</h1>
+        <p>API is available under <a href="/api">/api</a>.</p>
+        <ul>
+          <li><a href="/api/health">/api/health</a> - health check (JSON)</li>
+          <li><a href="/api/debug/patients">/api/debug/patients</a> - sample patients</li>
+          <li><a href="/api/debug/appointments">/api/debug/appointments</a> - sample appointments</li>
+        </ul>
+      </body>
+    </html>
+  `);
 });
 
 //   DEBUG ENDPOINTS
@@ -383,6 +326,47 @@ app.get('/api/debug/appointments', async (req, res) => {
       success: false,
       error: error.message
     });
+  }
+});
+
+// Dev debug: return full patient row by email (do NOT enable in production)
+app.get('/api/debug/patient', async (req, res) => {
+  try {
+    const email = req.query.email;
+    if (!email) return res.status(400).json({ success: false, error: 'email query required' });
+    const { data, error } = await supabase.from('patients').select('*').eq('email', String(email)).single();
+    if (error) return res.status(500).json({ success: false, error: error.message });
+    res.json({ success: true, data });
+  } catch (e) {
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
+// DEBUG: list registered routes (useful when diagnosing 404s)
+app.get('/api/debug/routes', (req, res) => {
+  try {
+    const routes = [];
+    const stack = app._router && app._router.stack ? app._router.stack : [];
+    stack.forEach(layer => {
+      try {
+        if (layer.route && layer.route.path) {
+          const methods = Object.keys(layer.route.methods || {}).map(m => m.toUpperCase()).join(',');
+          routes.push({ path: layer.route.path, methods });
+        } else if (layer.name === 'router' && layer.handle && layer.handle.stack) {
+          layer.handle.stack.forEach(r => {
+            if (r.route && r.route.path) {
+              const methods = Object.keys(r.route.methods || {}).map(m => m.toUpperCase()).join(',');
+              routes.push({ path: r.route.path, methods });
+            }
+          });
+        }
+      } catch (e) {
+        // ignore per-route errors
+      }
+    });
+    res.json({ success: true, routes });
+  } catch (e) {
+    res.status(500).json({ success: false, error: e.message });
   }
 });
 

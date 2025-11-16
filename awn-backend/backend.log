@@ -1,0 +1,12 @@
+[dotenv@17.2.3] injecting env (5) from .env -- tip: 🔑 add access controls to secrets: https://dotenvx.com/ops
+🔗 تهيئة Supabase client...
+URL: https://pxgvnjhgzrfkdzheyold.supabase.co
+Key length: 208
+ الباك إند الشامل شغال على port 5001
+ جاهز للاتصال مع الفرونت إند
+   POST /api/auth/signup - تسجيل جديد
+   POST /api/auth/login - تسجيل دخول
+   GET  /api/appointments - جلب المواعيد
+   POST /api/appointments - إنشاء موعد
+   GET  /api/health - فحص الحالة
+  الاتصال بـ Supabase ناجح!

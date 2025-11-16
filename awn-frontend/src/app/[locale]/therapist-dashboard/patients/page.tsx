@@ -7,9 +7,9 @@ import PatientsTherapists from "./PatientsTherapists";
 export default function PatientsPage({
   params,
 }: {
-  params: Promise<{ locale: Locale }>;
+    params: { locale: Locale };
 }) {
-  const { locale } = React.use(params); 
+    const { locale } = params; 
   return (
     <DashboardTherapistsLayout locale={locale}>
       <PatientsTherapists locale={locale} />

@@ -1,8 +1,7 @@
-import { use } from 'react'
 import type { Locale } from '@/lib/i18n'
 
-export default function PrivacyPage({ params }: { params: Promise<{ locale: Locale }> }) {
-  const { locale } = use(params)
+export default function PrivacyPage({ params }: { params: { locale: Locale } }) {
+  const { locale } = params
   const isArabic = locale === 'ar'
 
   const content = isArabic ? {

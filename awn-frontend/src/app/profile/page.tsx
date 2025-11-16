@@ -1,15 +1,9 @@
-"use client";
-
+import React from "react";
 import Login from "@/components/login";
 import type { Locale } from "@/lib/i18n";
-import { use } from "react";
 
-export default function LoginPage({
-  params,
-}: {
-  params: Promise<{ locale: Locale }>;
-}) {
-  const { locale } = use(params);
+export default function LoginPage({ params }: { params: { locale: Locale } }) {
+  const locale = params.locale;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
@@ -17,7 +11,9 @@ export default function LoginPage({
         <h1 className="text-2xl font-bold mb-6 text-center">
           {locale === "ar" ? "تسجيل الدخول" : "Login"}
         </h1>
-        <Login locale={locale} />
+        <React.Suspense fallback={<div />}>
+          <Login locale={locale} />
+        </React.Suspense>
       </div>
     </div>
   );

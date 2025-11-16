@@ -1,4 +1,4 @@
-'use client';
+ 'use client';
 
 import * as React from 'react';
 import Link from 'next/link';
@@ -8,7 +8,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toastManager } from '@/hooks/use-toast';
-import { Check, X, Eye, EyeOff, Mail } from 'lucide-react';
+import { Check, X, Eye, EyeOff, Mail, MapPin, Map, Crosshair } from 'lucide-react';
+import dynamic from 'next/dynamic';
+import { signup } from '@/lib/api'
+import { API_BASE_URL } from '@/lib/api'
 
 type Locale = 'ar' | 'en';
 
@@ -89,6 +92,16 @@ export default function SignUpPage({ locale = 'ar' }: { locale?: Locale }) {
   const [passwordTouched, setPasswordTouched] = React.useState(false);
   const [confirmPasswordTouched, setConfirmPasswordTouched] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [phone, setPhone] = React.useState('');
+  const [address, setAddress] = React.useState('');
+  const [addressCoords, setAddressCoords] = React.useState<{ lat: number; lng: number } | null>(null);
+  const [showMap, setShowMap] = React.useState(false);
+  const [selectedCoords, setSelectedCoords] = React.useState<{ lat: number; lng: number } | null>(null);
+  const [mapAddress, setMapAddress] = React.useState('');
+  const [isLoadingMap, setIsLoadingMap] = React.useState(false);
+  const [firstname, setFirstname] = React.useState('');
+  const [lastname, setLastname] = React.useState('');
+  const [email, setEmail] = React.useState('');
 
   const passwordValidation: PasswordValidation = React.useMemo(() => {
     return {
@@ -103,6 +116,62 @@ export default function SignUpPage({ locale = 'ar' }: { locale?: Locale }) {
 
   const isPasswordValid = Object.values(passwordValidation).every(Boolean);
 
+  // Dynamically import the Map component to avoid SSR issues
+  const DynamicMap = dynamic(() => import('@/components/MapComponent'), { ssr: false });
+
+  const reverseGeocode = async (lat: number, lng: number) => {
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=${locale === 'ar' ? 'ar' : 'en'}`
+      );
+      const data = await response.json();
+      if (data && data.display_name) {
+        setMapAddress(data.display_name);
+        return data.display_name;
+      }
+    } catch (e) {
+      // ignore
+    }
+    const fallback = '';
+    setMapAddress(fallback);
+    return fallback;
+  };
+
+  const getCurrentLocation = () => {
+    setIsLoadingMap(true);
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        const coords = { lat: position.coords.latitude, lng: position.coords.longitude };
+        setSelectedCoords(coords);
+        await reverseGeocode(coords.lat, coords.lng);
+        setIsLoadingMap(false);
+      }, (err) => {
+        console.warn('Geolocation error', err);
+        // fallback to Riyadh
+        const coords = { lat: 24.7136, lng: 46.6753 };
+        setSelectedCoords(coords);
+        reverseGeocode(coords.lat, coords.lng).finally(() => setIsLoadingMap(false));
+      }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 });
+    } else {
+      const coords = { lat: 24.7136, lng: 46.6753 };
+      setSelectedCoords(coords);
+      reverseGeocode(coords.lat, coords.lng).finally(() => setIsLoadingMap(false));
+    }
+  };
+
+  const handleMapClick = async (lat: number, lng: number) => {
+    setSelectedCoords({ lat, lng });
+    await reverseGeocode(lat, lng);
+  };
+
+  const handleConfirmLocation = () => {
+    if (selectedCoords && mapAddress) {
+      setAddress(mapAddress);
+      setAddressCoords(selectedCoords);
+      setShowMap(false);
+    }
+  };
+
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setIsSubmitting(true);
@@ -116,37 +185,115 @@ export default function SignUpPage({ locale = 'ar' }: { locale?: Locale }) {
       return;
     }
 
+    // Basic email validation before sending
+    const form = e.currentTarget as HTMLFormElement;
+    const formData = new FormData(form);
+    const emailVal = (formData.get('email') as string) || '';
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(emailVal)) {
+      toastManager.add({ title: t.error, description: 'البريد الإلكتروني غير صالح', type: 'error' });
+      setIsSubmitting(false);
+      return;
+    }
     try {
-      const form = e.currentTarget as HTMLFormElement;
-      const formData = new FormData(form);
-
-      const signupData = {
-        first_name: formData.get('firstname') as string,
-        last_name: formData.get('lastname') as string,
-        email: formData.get('email') as string,
+      // formData already created above for email check
+      const signupData: any = {
+        first_name: (formData.get('firstname') as string || '').trim() || firstname,
+        last_name: (formData.get('lastname') as string || '').trim() || lastname,
+        email: (formData.get('email') as string || '').trim().toLowerCase() || email,
+        phone: (formData.get('phone') as string || '').trim() || phone,
         password: formData.get('password') as string,
         role: 'patient'
       };
 
-      const response = await fetch('http://localhost:5000/api/auth/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(signupData),
-      });
+      // include address and coordinates when present
+      if (address) signupData.address = address;
+      if (addressCoords) signupData.address_coords = addressCoords;
 
-      const result = await response.json();
+      // Basic phone validation (digits, +, -, spaces, parentheses)
+      const phoneRegex = /^[0-9+\-() ]{7,20}$/;
+      if (!phoneRegex.test(signupData.phone)) {
+        toastManager.add({ title: 'Invalid phone number', description: '', type: 'error' });
+        setIsSubmitting(false);
+        return;
+      }
+
+      const result: any = await signup(signupData);
 
       if (result.success) {
+        // Merge client-side provided fields into the returned user object so frontend
+        // always has phone/address available immediately after signup.
+        const mergedUser = {
+          ...(result.user || {}),
+          first_name: signupData.first_name || (result.user || {}).first_name,
+          last_name: signupData.last_name || (result.user || {}).last_name,
+          email: signupData.email || (result.user || {}).email,
+          phone: signupData.phone || (result.user || {}).phone,
+          address: address || (result.user || {}).address,
+        };
+
+        
         localStorage.setItem('token', result.token);
-        localStorage.setItem('user', JSON.stringify(result.user));
+        localStorage.setItem('user', JSON.stringify(mergedUser));
+        localStorage.setItem('isLoggedIn', '1');
+        // Notify other components in the same window that auth changed
+        try { window.dispatchEvent(new Event('auth-change')); } catch (e) {}
         
         toastManager.add({
           title: t.success,
           description: '',
           type: 'success'
         });
+
+        // If there is a pending booking, auto-submit it now with the new token
+        try {
+          const rawPending = localStorage.getItem('pendingBooking');
+          if (rawPending) {
+            const parsedPending = JSON.parse(rawPending);
+            const pb = parsedPending.bookingData || parsedPending;
+            const therapistId = parsedPending.therapistId || pb.therapist_id || '';
+
+            const bookingPayload: any = {
+              therapist_id: therapistId || pb.therapist_id,
+              patient_name: `${signupData.first_name} ${signupData.last_name}`.trim() || pb.patient_name || '',
+              patient_email: signupData.email || pb.patient_email || '',
+              patient_phone: signupData.phone || pb.patient_phone || '',
+              booking_date: pb.booking_date || pb.date,
+              booking_time: pb.booking_time || pb.time,
+              session_type: pb.session_type || pb.kind || pb.session_type,
+              session_duration: pb.session_duration || pb.session_duration || 60,
+              notes: pb.notes || '',
+              address: pb.address || address || undefined,
+            }
+
+            const resp = await fetch(`${API_BASE_URL}/booking`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${result.token}`
+              },
+              body: JSON.stringify(bookingPayload)
+            })
+
+            const bookingResText = await resp.text().catch(() => '')
+            let bookingJson: any = {}
+            try { bookingJson = bookingResText ? JSON.parse(bookingResText) : {} } catch (e) { bookingJson = {} }
+
+            if (resp.ok && bookingJson?.success) {
+              const bookingId = bookingJson.data?.booking_id || bookingJson.data?.id || ''
+              // remove pending booking now that it's created
+              try { localStorage.removeItem('pendingBooking') } catch (e) {}
+              // redirect back to therapist with bookingId so page shows confirmation
+              router.push(`/${locale}/therapists/${therapistId}?book=true&resume=1&bookingId=${encodeURIComponent(bookingId)}`)
+              return
+            } else {
+              console.warn('Auto-booking failed', { status: resp.status, body: bookingJson || bookingResText })
+              // fallthrough to normal redirect
+            }
+          }
+        } catch (autoErr) {
+          console.warn('Auto-submit pending booking failed', autoErr)
+        }
 
         router.push(next);
       } else {
@@ -156,17 +303,40 @@ export default function SignUpPage({ locale = 'ar' }: { locale?: Locale }) {
           type: 'error'
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Signup error:', error);
+      const message = error?.message || error?.toString() || t.error
       toastManager.add({
-        title: t.error,
-        description: 'حدث خطأ في الشبكة',
+        title: message,
+        description: typeof error?.details === 'string' ? error.details : 'حدث خطأ في الشبكة',
         type: 'error'
       });
     } finally {
       setIsSubmitting(false);
     }
   }
+
+  // Prefill from pending booking if present
+  React.useEffect(() => {
+    try {
+      if (typeof window === 'undefined') return;
+      const raw = localStorage.getItem('pendingBooking');
+      if (!raw) return;
+      const parsed = JSON.parse(raw);
+      const data = parsed?.bookingData;
+      if (!data) return;
+      // patient_name may be full name
+      const full = data.patient_name || '';
+      const parts = full.trim().split(/\s+/);
+      if (parts.length > 0) setFirstname(parts[0]);
+      if (parts.length > 1) setLastname(parts.slice(1).join(' '));
+      if (data.patient_email) setEmail(data.patient_email);
+      if (data.patient_phone) setPhone(data.patient_phone);
+      if (data.address) setAddress(data.address);
+    } catch (e) {
+      // ignore
+    }
+  }, []);
 
   const RuleIcon = ({ isValid, touched }: { isValid: boolean; touched: boolean }) => {
     if (!touched) return null;
@@ -203,19 +373,23 @@ export default function SignUpPage({ locale = 'ar' }: { locale?: Locale }) {
               <div className="space-y-2">
                 <Label>{t.first}</Label>
                 <Input 
-                  name="firstname"
-                  required 
-                  className="h-12 rounded-xl" 
-                  disabled={isSubmitting}
+                    name="firstname"
+                    required 
+                    className="h-12 rounded-xl" 
+                    disabled={isSubmitting}
+                    value={firstname}
+                    onChange={(e) => setFirstname(e.target.value)}
                 />
               </div>
               <div className="space-y-2">
                 <Label>{t.last}</Label>
                 <Input 
-                  name="lastname"
-                  required 
-                  className="h-12 rounded-xl" 
-                  disabled={isSubmitting}
+                    name="lastname"
+                    required 
+                    className="h-12 rounded-xl" 
+                    disabled={isSubmitting}
+                    value={lastname}
+                    onChange={(e) => setLastname(e.target.value)}
                 />
               </div>
             </div>
@@ -232,7 +406,48 @@ export default function SignUpPage({ locale = 'ar' }: { locale?: Locale }) {
                   placeholder={t.emailPlaceholder}
                   className="h-12 pl-10 rounded-xl"
                   disabled={isSubmitting}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
+              </div>
+            </div>
+
+            {/* Phone */}
+            <div className="space-y-2">
+              <Label>Phone</Label>
+              <Input
+                name="phone"
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                required
+                placeholder="05xxxxxxxx"
+                className="h-12 rounded-xl"
+                disabled={isSubmitting}
+              />
+            </div>
+
+            {/* Address (optional, required for home visits) - uses MapPicker like Settings */}
+            <div className="space-y-2">
+              <Label>{locale === 'ar' ? 'العنوان' : 'Address'}</Label>
+              <div className="flex gap-2">
+                <Input
+                  name="address"
+                  type="text"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  placeholder={locale === 'ar' ? 'أدخل العنوان كاملاً' : 'Enter address (required for home visits)'}
+                  className="h-12 rounded-xl flex-1"
+                  disabled={isSubmitting}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowMap(true)}
+                  disabled={isSubmitting}
+                  className="inline-flex items-center px-3 py-2 rounded-xl bg-primary text-white hover:opacity-90"
+                >
+                  <Map className="h-5 w-5" />
+                </button>
               </div>
             </div>
 
@@ -329,6 +544,47 @@ export default function SignUpPage({ locale = 'ar' }: { locale?: Locale }) {
           </Link>
         </div>
       </form>
+      {/* Map Picker Modal */}
+      {showMap && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl shadow-xl max-w-3xl w-full max-h-[90vh] overflow-hidden">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <h2 className="text-xl font-semibold text-gray-900">{locale === 'ar' ? 'اختر موقعك' : 'Choose Your Location'}</h2>
+              <button onClick={() => setShowMap(false)} className="text-gray-500 hover:text-gray-700">{locale === 'ar' ? 'إغلاق' : 'Close'}</button>
+            </div>
+            <div className="p-6">
+              <div className="mb-4">
+                <Label className="text-gray-700 font-medium mb-2 block">{locale === 'ar' ? 'العنوان المحدد' : 'Selected Address'}</Label>
+                <Input value={address} onChange={(e) => setAddress(e.target.value)} placeholder={locale === 'ar' ? 'اكتب العنوان أو اختر من الخريطة' : 'Type address or select from map'} className="bg-white border-gray-300" />
+              </div>
+
+              <div className="relative">
+                <div className="w-full h-96 rounded-lg border-2 border-gray-300 overflow-hidden">
+                  <DynamicMap center={selectedCoords || addressCoords || { lat: 24.7136, lng: 46.6753 }} onMapClick={(lat: number, lng: number) => handleMapClick(lat, lng)} selectedPosition={selectedCoords || addressCoords} />
+                </div>
+
+                <Button onClick={async () => {
+                  const coords = selectedCoords || addressCoords;
+                  if (coords) {
+                    await reverseGeocode(coords.lat, coords.lng);
+                    setSelectedCoords(coords);
+                    handleConfirmLocation();
+                  } else if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(async (pos) => {
+                      const pcoords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                      setSelectedCoords(pcoords);
+                      await reverseGeocode(pcoords.lat, pcoords.lng);
+                      handleConfirmLocation();
+                    }, () => {});
+                  }
+                }} className="mt-4 bg-teal-600 text-white">
+                  {locale === 'ar' ? 'تأكيد الموقع' : 'Confirm Location'}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

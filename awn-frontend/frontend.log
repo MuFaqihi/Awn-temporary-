@@ -1,0 +1,3438 @@
+ ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of /Users/rawan/Desktop/awn-new-backend branch/Awn-app/package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * /Users/rawan/Desktop/awn-new-backend branch/Awn-app/awn-frontend/package-lock.json
+
+   ▲ Next.js 15.5.5 (Turbopack)
+   - Local:        http://localhost:3000
+   - Network:      http://172.20.10.13:3000
+   - Environments: .env.local
+
+ ✓ Starting...
+ ○ Compiling middleware ...
+ ✓ Compiled middleware in 704ms
+ ✓ Ready in 4.3s
+ ○ Compiling /[locale]/signup ...
+ ✓ Compiled /[locale]/signup in 25.2s
+Error: Route "/[locale]/signup" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+ GET /ar/signup?next=%2Far%2Fdashboard 200 in 33333ms
+ ○ Compiling /favicon.ico ...
+ ✓ Compiled /favicon.ico in 2.6s
+ GET /favicon.ico?favicon.0b3bf435.ico 200 in 3083ms
+ ○ Compiling /[locale] ...
+ ✓ Compiled /[locale] in 2.1s
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /ar 200 in 4641ms
+ ○ Compiling /[locale]/therapists ...
+ ✓ Compiled /[locale]/therapists in 1114ms
+ ⨯ ./awn-frontend/src/app/[locale]/therapists/page.tsx:82:9
+Parsing ecmascript source code failed
+[0m [90m 80 |[39m         console[33m.[39mlog([32m'📡 جلب بيانات المعالجين من الباك إند...'[39m)
+ [90m 81 |[39m         
+[31m[1m>[22m[39m[90m 82 |[39m         [36mimport[39m { [33mAPI_BASE_URL[39m } [36mfrom[39m [32m'@/lib/api'[39m
+ [90m    |[39m         [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 83 |[39m         [36mconst[39m response [33m=[39m [36mawait[39m fetch([32m`${API_BASE_URL}/therapists`[39m)
+ [90m 84 |[39m         
+ [90m 85 |[39m         [36mif[39m ([33m![39mresponse[33m.[39mok) {[0m
+
+'import', and 'export' cannot be used outside of module code
+
+
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 6s
+ GET /ar/therapists 500 in 8858ms
+ ⨯ ./awn-frontend/src/app/[locale]/therapists/page.tsx:82:9
+Parsing ecmascript source code failed
+[0m [90m 80 |[39m         console[33m.[39mlog([32m'📡 جلب بيانات المعالجين من الباك إند...'[39m)
+ [90m 81 |[39m         
+[31m[1m>[22m[39m[90m 82 |[39m         [36mimport[39m { [33mAPI_BASE_URL[39m } [36mfrom[39m [32m'@/lib/api'[39m
+ [90m    |[39m         [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 83 |[39m         [36mconst[39m response [33m=[39m [36mawait[39m fetch([32m`${API_BASE_URL}/therapists`[39m)
+ [90m 84 |[39m         
+ [90m 85 |[39m         [36mif[39m ([33m![39mresponse[33m.[39mok) {[0m
+
+'import', and 'export' cannot be used outside of module code
+
+
+ GET /ar/therapists 500 in 633ms
+ GET /favicon.ico 500 in 223ms
+ ✓ Compiled in 2.6s
+ ✓ Compiled /[locale]/therapists in 214ms
+Error: Route "/[locale]/therapists" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+ GET /ar/therapists 200 in 5059ms
+ GET /favicon.ico?favicon.0b3bf435.ico 200 in 406ms
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ ○ Compiling /_not-found/page ...
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Huda.png 200 in 1505ms
+ ⨯ The requested resource isn't a valid image for /Huda.png received null
+ GET /Sarah.png 200 in 1975ms
+ ⨯ The requested resource isn't a valid image for /Sarah.png received null
+ ✓ Compiled /_not-found/page in 2.2s
+ GET /therapists/khaled-habib.jpg 404 in 2676ms
+ ⨯ The requested resource isn't a valid image for /therapists/khaled-habib.jpg received null
+ GET /therapists/thamer-alshahrani.jpg 404 in 760ms
+ ⨯ The requested resource isn't a valid image for /therapists/thamer-alshahrani.jpg received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Mohammed.png 200 in 1088ms
+ ⨯ The requested resource isn't a valid image for /Mohammed.png received null
+ GET /therapists/alaa-ahmed.jpg 404 in 959ms
+ ⨯ The requested resource isn't a valid image for /therapists/alaa-ahmed.jpg received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Faisal.png 200 in 1030ms
+ ⨯ The requested resource isn't a valid image for /Faisal.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Amani.png 200 in 1701ms
+ ⨯ The requested resource isn't a valid image for /Amani.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Ahmed.png 200 in 1317ms
+ ⨯ The requested resource isn't a valid image for /Ahmed.png received null
+ ○ Compiling /[locale]/therapists/[id] ...
+ ✓ Compiled /[locale]/therapists/[id] in 1050ms
+ ⨯ ./awn-frontend/src/app/[locale]/therapists/[id]/page.tsx:65:9
+Parsing ecmascript source code failed
+[0m [90m 63 |[39m         console[33m.[39mlog([32m'📡 جلب بيانات المعالج من الباك إند:'[39m[33m,[39m id)
+ [90m 64 |[39m         
+[31m[1m>[22m[39m[90m 65 |[39m         [36mimport[39m { [33mAPI_BASE_URL[39m } [36mfrom[39m [32m'@/lib/api'[39m
+ [90m    |[39m         [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 66 |[39m         [36mconst[39m response [33m=[39m [36mawait[39m fetch([32m`${API_BASE_URL}/therapist/${id}`[39m)
+ [90m 67 |[39m         
+ [90m 68 |[39m         [36mif[39m ([33m![39mresponse[33m.[39mok) {[0m
+
+'import', and 'export' cannot be used outside of module code
+
+
+ GET /ar/therapists/24788648-7d08-432e-9a23-1ec78432d1ac?book=true 500 in 1350ms
+ ⨯ ./awn-frontend/src/app/[locale]/therapists/[id]/page.tsx:65:9
+Parsing ecmascript source code failed
+[0m [90m 63 |[39m         console[33m.[39mlog([32m'📡 جلب بيانات المعالج من الباك إند:'[39m[33m,[39m id)
+ [90m 64 |[39m         
+[31m[1m>[22m[39m[90m 65 |[39m         [36mimport[39m { [33mAPI_BASE_URL[39m } [36mfrom[39m [32m'@/lib/api'[39m
+ [90m    |[39m         [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 66 |[39m         [36mconst[39m response [33m=[39m [36mawait[39m fetch([32m`${API_BASE_URL}/therapist/${id}`[39m)
+ [90m 67 |[39m         
+ [90m 68 |[39m         [36mif[39m ([33m![39mresponse[33m.[39mok) {[0m
+
+'import', and 'export' cannot be used outside of module code
+
+
+ GET /ar/therapists/24788648-7d08-432e-9a23-1ec78432d1ac?book=true 500 in 1300ms
+ GET /favicon.ico 500 in 214ms
+ ✓ Compiled in 980ms
+ ✓ Compiled /[locale]/therapists/[id] in 253ms
+Error: Route "/[locale]/therapists/[id]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+  معالج الصفحة - therapist: null
+  معالج الصفحة - loading: true
+  معالج الصفحة - error: 
+ GET /ar/therapists/24788648-7d08-432e-9a23-1ec78432d1ac?book=true 200 in 3937ms
+ GET /favicon.ico?favicon.0b3bf435.ico 200 in 546ms
+Error: Route "/[locale]/therapists/[id]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+  معالج الصفحة - therapist: null
+  معالج الصفحة - loading: true
+  معالج الصفحة - error: 
+ GET /ar/therapists/24788648-7d08-432e-9a23-1ec78432d1ac?book=true 200 in 1487ms
+ GET /favicon.ico?favicon.0b3bf435.ico 200 in 346ms
+Error: Route "/[locale]/therapists/[id]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+ GET /en/therapists/24788648-7d08-432e-9a23-1ec78432d1ac 200 in 326ms
+ GET /ar/therapists 200 in 407ms
+ GET /therapists/thamer-alshahrani.jpg 404 in 1715ms
+ ⨯ The requested resource isn't a valid image for /therapists/thamer-alshahrani.jpg received null
+ GET /therapists/khaled-habib.jpg 404 in 1746ms
+ ⨯ The requested resource isn't a valid image for /therapists/khaled-habib.jpg received null
+ GET /therapists/alaa-ahmed.jpg 404 in 1829ms
+ ⨯ The requested resource isn't a valid image for /therapists/alaa-ahmed.jpg received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Sarah.png 200 in 2408ms
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ ⨯ The requested resource isn't a valid image for /Sarah.png received null
+ GET /Huda.png 200 in 2798ms
+ GET /Mohammed.png 200 in 2821ms
+ ⨯ The requested resource isn't a valid image for /Huda.png received null
+ ⨯ The requested resource isn't a valid image for /Mohammed.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+Error: Route "/[locale]/therapists" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+ GET /Faisal.png 200 in 1232ms
+ ⨯ The requested resource isn't a valid image for /Faisal.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Amani.png 200 in 1834ms
+ ⨯ The requested resource isn't a valid image for /Amani.png received null
+ GET /en/therapists 200 in 2495ms
+ GET /therapists/alaa-ahmed.jpg 404 in 596ms
+ GET /therapists/khaled-habib.jpg 404 in 622ms
+ ⨯ The requested resource isn't a valid image for /therapists/alaa-ahmed.jpg received null
+ ⨯ The requested resource isn't a valid image for /therapists/khaled-habib.jpg received null
+ GET /therapists/thamer-alshahrani.jpg 404 in 975ms
+ ⨯ The requested resource isn't a valid image for /therapists/thamer-alshahrani.jpg received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Sarah.png 200 in 1284ms
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ ⨯ The requested resource isn't a valid image for /Sarah.png received null
+ GET /Huda.png 200 in 1961ms
+ GET /Mohammed.png 200 in 2016ms
+ ⨯ The requested resource isn't a valid image for /Huda.png received null
+ ⨯ The requested resource isn't a valid image for /Mohammed.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Faisal.png 200 in 2571ms
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ ⨯ The requested resource isn't a valid image for /Faisal.png received null
+ GET /Amani.png 200 in 2958ms
+ ⨯ The requested resource isn't a valid image for /Amani.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Ahmed.png 200 in 2645ms
+ ⨯ The requested resource isn't a valid image for /Ahmed.png received null
+ GET /en/therapists/bfd3ccf6-8510-49dd-9ce7-559dea5a4492 200 in 260ms
+ ✓ Compiled in 247ms
+ GET /therapists/khaled-habib.jpg 404 in 876ms
+ ⨯ The requested resource isn't a valid image for /therapists/khaled-habib.jpg received null
+ GET /therapists/thamer-alshahrani.jpg 404 in 1292ms
+ ⨯ The requested resource isn't a valid image for /therapists/thamer-alshahrani.jpg received null
+ GET /therapists/alaa-ahmed.jpg 404 in 1348ms
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ ⨯ The requested resource isn't a valid image for /therapists/alaa-ahmed.jpg received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Sarah.png 200 in 2072ms
+ ⨯ The requested resource isn't a valid image for /Sarah.png received null
+ GET /Huda.png 200 in 2590ms
+ GET /Mohammed.png 200 in 2595ms
+ ⨯ The requested resource isn't a valid image for /Huda.png received null
+ ⨯ The requested resource isn't a valid image for /Mohammed.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Faisal.png 200 in 919ms
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ ⨯ The requested resource isn't a valid image for /Faisal.png received null
+ GET /Ahmed.png 200 in 1215ms
+ ⨯ The requested resource isn't a valid image for /Ahmed.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Amani.png 200 in 1662ms
+ ⨯ The requested resource isn't a valid image for /Amani.png received null
+ GET /en/therapists/692ccba8-4188-449f-91a3-618fd15c4691 200 in 1209ms
+ GET /en/therapists/692ccba8-4188-449f-91a3-618fd15c4691?book=true 200 in 217ms
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Ahmed.png 200 in 402ms
+ ⨯ The requested resource isn't a valid image for /Ahmed.png received null
+ ✓ Compiled in 302ms
+ ✓ Compiled in 300ms
+ GET /en/signup?next=%2Fen%2Ftherapists%2F692ccba8-4188-449f-91a3-618fd15c4691%3Fbook%3Dtrue%26resume%3D1 200 in 403ms
+ ✓ Compiled in 699ms
+ ✓ Compiled in 806ms
+ ✓ Compiled in 353ms
+ GET /en/therapists 200 in 596ms
+ GET /therapists/khaled-habib.jpg 404 in 1796ms
+ ⨯ The requested resource isn't a valid image for /therapists/khaled-habib.jpg received null
+ GET /therapists/thamer-alshahrani.jpg 404 in 1904ms
+ ⨯ The requested resource isn't a valid image for /therapists/thamer-alshahrani.jpg received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Huda.png 200 in 2825ms
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Sarah.png 200 in 3006ms
+ ⨯ The requested resource isn't a valid image for /Huda.png received null
+ ⨯ The requested resource isn't a valid image for /Sarah.png received null
+ GET /Mohammed.png 200 in 3177ms
+ ⨯ The requested resource isn't a valid image for /Mohammed.png received null
+ GET /therapists/alaa-ahmed.jpg 404 in 4058ms
+ ⨯ The requested resource isn't a valid image for /therapists/alaa-ahmed.jpg received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Ahmed.png 200 in 2139ms
+ ⨯ The requested resource isn't a valid image for /Ahmed.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Amani.png 200 in 2374ms
+ ⨯ The requested resource isn't a valid image for /Amani.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Faisal.png 200 in 2386ms
+ ⨯ The requested resource isn't a valid image for /Faisal.png received null
+ GET /en/therapists/24788648-7d08-432e-9a23-1ec78432d1ac?book=true 200 in 2386ms
+ ✓ Compiled in 871ms
+ GET /en/signup?next=%2Fen%2Ftherapists%2F24788648-7d08-432e-9a23-1ec78432d1ac%3Fbook%3Dtrue%26resume%3D1 200 in 586ms
+ ✓ Compiled in 466ms
+ ✓ Compiled in 356ms
+ ✓ Compiled in 319ms
+Error: Route "/[locale]/therapists/[id]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+  معالج الصفحة - therapist: null
+  معالج الصفحة - loading: true
+  معالج الصفحة - error: 
+ GET /en/therapists/24788648-7d08-432e-9a23-1ec78432d1ac?book=true 200 in 2899ms
+ GET /favicon.ico?favicon.0b3bf435.ico 200 in 475ms
+ GET /en/signup?next=%2Fen%2Ftherapists%2F24788648-7d08-432e-9a23-1ec78432d1ac%3Fbook%3Dtrue%26resume%3D1 200 in 474ms
+ GET /en/therapists/24788648-7d08-432e-9a23-1ec78432d1ac?book=true&resume=1 200 in 426ms
+ ○ Compiling /[locale]/login ...
+ ✓ Compiled /[locale]/login in 1682ms
+ GET /en/login 200 in 3577ms
+ ○ Compiling /[locale]/dashboard ...
+ ✓ Compiled /[locale]/dashboard in 6s
+ GET /en/dashboard 200 in 10141ms
+ ○ Compiling /[locale]/dashboard/appointments ...
+ ✓ Compiled /[locale]/dashboard/appointments in 2.7s
+ GET /en/dashboard/appointments 200 in 5587ms
+Error: Route "/[locale]/therapists" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+ GET /en/therapists 200 in 3343ms
+ GET /therapists/alaa-ahmed.jpg 404 in 927ms
+ ⨯ The requested resource isn't a valid image for /therapists/alaa-ahmed.jpg received null
+ GET /therapists/khaled-habib.jpg 404 in 974ms
+ ⨯ The requested resource isn't a valid image for /therapists/khaled-habib.jpg received null
+ GET /therapists/thamer-alshahrani.jpg 404 in 1559ms
+ ⨯ The requested resource isn't a valid image for /therapists/thamer-alshahrani.jpg received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Huda.png 200 in 3173ms
+ GET /Sarah.png 200 in 3217ms
+ GET /Mohammed.png 200 in 3257ms
+ ⨯ The requested resource isn't a valid image for /Huda.png received null
+ ⨯ The requested resource isn't a valid image for /Sarah.png received null
+ ⨯ The requested resource isn't a valid image for /Mohammed.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Faisal.png 200 in 3403ms
+ GET /Amani.png 200 in 3425ms
+ ⨯ The requested resource isn't a valid image for /Faisal.png received null
+ ⨯ The requested resource isn't a valid image for /Amani.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Ahmed.png 200 in 1828ms
+ ⨯ The requested resource isn't a valid image for /Ahmed.png received null
+ GET /en/therapists/310c1010-31a0-448c-afd2-9b8cf3fd1525?book=true 200 in 1992ms
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Amani.png 200 in 824ms
+ ⨯ The requested resource isn't a valid image for /Amani.png received null
+Error: Route "/[locale]/dashboard" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+ GET /en/dashboard 200 in 1287ms
+ GET /en/therapists 200 in 399ms
+ GET /therapists/khaled-habib.jpg 404 in 2155ms
+ ⨯ The requested resource isn't a valid image for /therapists/khaled-habib.jpg received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Sarah.png 200 in 4199ms
+ ⨯ The requested resource isn't a valid image for /Sarah.png received null
+ GET /Huda.png 200 in 4230ms
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ ⨯ The requested resource isn't a valid image for /Huda.png received null
+ GET /Mohammed.png 200 in 4924ms
+ ⨯ The requested resource isn't a valid image for /Mohammed.png received null
+ GET /therapists/alaa-ahmed.jpg 404 in 5006ms
+ ⨯ The requested resource isn't a valid image for /therapists/alaa-ahmed.jpg received null
+ GET /therapists/thamer-alshahrani.jpg 404 in 5179ms
+ ⨯ The requested resource isn't a valid image for /therapists/thamer-alshahrani.jpg received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Amani.png 200 in 2393ms
+ ⨯ The requested resource isn't a valid image for /Amani.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Faisal.png 200 in 2682ms
+ ⨯ The requested resource isn't a valid image for /Faisal.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Ahmed.png 200 in 3673ms
+ ⨯ The requested resource isn't a valid image for /Ahmed.png received null
+ GET /en/therapists/24788648-7d08-432e-9a23-1ec78432d1ac?book=true 200 in 3787ms
+ ✓ Compiled in 10.8s
+ ✓ Compiled in 4.3s
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /en 200 in 2367ms
+ GET /en/login 200 in 5413ms
+ GET /en/dashboard 200 in 3421ms
+ GET /en/therapists 200 in 1843ms
+ GET /therapists/khaled-habib.jpg 404 in 10179ms
+ ⨯ The requested resource isn't a valid image for /therapists/khaled-habib.jpg received null
+ GET /therapists/thamer-alshahrani.jpg 404 in 10217ms
+ ⨯ The requested resource isn't a valid image for /therapists/thamer-alshahrani.jpg received null
+ GET /therapists/alaa-ahmed.jpg 404 in 10430ms
+ ⨯ The requested resource isn't a valid image for /therapists/alaa-ahmed.jpg received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Sarah.png 200 in 14236ms
+ ⨯ The requested resource isn't a valid image for /Sarah.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Huda.png 200 in 17456ms
+ GET /Mohammed.png 200 in 17376ms
+ ⨯ The requested resource isn't a valid image for /Huda.png received null
+ ⨯ The requested resource isn't a valid image for /Mohammed.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Ahmed.png 200 in 7751ms
+ ⨯ The requested resource isn't a valid image for /Ahmed.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /en/therapists/24788648-7d08-432e-9a23-1ec78432d1ac?book=true 200 in 11626ms
+ GET /Faisal.png 200 in 9953ms
+ ⨯ The requested resource isn't a valid image for /Faisal.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Amani.png 200 in 12923ms
+ ⨯ The requested resource isn't a valid image for /Amani.png received null
+ GET /therapists/khaled-habib.jpg 404 in 3784ms
+ ⨯ The requested resource isn't a valid image for /therapists/khaled-habib.jpg received null
+ GET /therapists/thamer-alshahrani.jpg 404 in 4244ms
+ ⨯ The requested resource isn't a valid image for /therapists/thamer-alshahrani.jpg received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /therapists/alaa-ahmed.jpg 404 in 4665ms
+ ⨯ The requested resource isn't a valid image for /therapists/alaa-ahmed.jpg received null
+ GET /Sarah.png 200 in 6350ms
+ ⨯ The requested resource isn't a valid image for /Sarah.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Mohammed.png 200 in 9473ms
+ GET /Huda.png 200 in 9694ms
+ ⨯ The requested resource isn't a valid image for /Mohammed.png received null
+ ⨯ The requested resource isn't a valid image for /Huda.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Faisal.png 200 in 8530ms
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ ⨯ The requested resource isn't a valid image for /Faisal.png received null
+ GET /Ahmed.png 200 in 8588ms
+ ⨯ The requested resource isn't a valid image for /Ahmed.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Amani.png 200 in 9486ms
+ ⨯ The requested resource isn't a valid image for /Amani.png received null
+ ✓ Compiled in 4.1s
+ ✓ Compiled in 3.8s
+ ✓ Compiled in 3.7s
+ ✓ Compiled in 4.7s
+ ✓ Compiled in 2.2s
+Error: Route "/[locale]/therapists" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+ GET /en/therapists 200 in 5152ms
+ GET /favicon.ico?favicon.0b3bf435.ico 200 in 390ms
+ GET /therapists/khaled-habib.jpg 404 in 1005ms
+ ⨯ The requested resource isn't a valid image for /therapists/khaled-habib.jpg received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Huda.png 200 in 2841ms
+ GET /Sarah.png 200 in 2877ms
+ ⨯ The requested resource isn't a valid image for /Huda.png received null
+ ⨯ The requested resource isn't a valid image for /Sarah.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /therapists/alaa-ahmed.jpg 404 in 2445ms
+ ⨯ The requested resource isn't a valid image for /therapists/alaa-ahmed.jpg received null
+ GET /Mohammed.png 200 in 2625ms
+ ⨯ The requested resource isn't a valid image for /Mohammed.png received null
+ GET /therapists/thamer-alshahrani.jpg 404 in 3119ms
+ ⨯ The requested resource isn't a valid image for /therapists/thamer-alshahrani.jpg received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Faisal.png 200 in 3044ms
+ ⨯ The requested resource isn't a valid image for /Faisal.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Amani.png 200 in 4595ms
+ ⨯ The requested resource isn't a valid image for /Amani.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Ahmed.png 200 in 7864ms
+ ⨯ The requested resource isn't a valid image for /Ahmed.png received null
+ GET /therapists/khaled-habib.jpg 404 in 5213ms
+ ⨯ The requested resource isn't a valid image for /therapists/khaled-habib.jpg received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Huda.png 200 in 8101ms
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ ⨯ The requested resource isn't a valid image for /Huda.png received null
+ GET /Sarah.png 200 in 9943ms
+ ⨯ The requested resource isn't a valid image for /Sarah.png received null
+ GET /therapists/khaled-habib.jpg 404 in 3799ms
+ ⨯ The requested resource isn't a valid image for /therapists/khaled-habib.jpg received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Sarah.png 200 in 6981ms
+ ⨯ The requested resource isn't a valid image for /Sarah.png received null
+ GET /Huda.png 200 in 9475ms
+ ⨯ The requested resource isn't a valid image for /Huda.png received null
+ GET /therapists/khaled-habib.jpg 404 in 1453ms
+ ⨯ The requested resource isn't a valid image for /therapists/khaled-habib.jpg received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Sarah.png 200 in 2198ms
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ ⨯ The requested resource isn't a valid image for /Sarah.png received null
+ GET /Huda.png 200 in 2634ms
+ ⨯ The requested resource isn't a valid image for /Huda.png received null
+ GET /therapists/khaled-habib.jpg 404 in 1285ms
+ ⨯ The requested resource isn't a valid image for /therapists/khaled-habib.jpg received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Sarah.png 200 in 1780ms
+ ⨯ The requested resource isn't a valid image for /Sarah.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Huda.png 200 in 2056ms
+ ⨯ The requested resource isn't a valid image for /Huda.png received null
+ GET /therapists/alaa-ahmed.jpg 404 in 5467ms
+ GET /therapists/thamer-alshahrani.jpg 404 in 5512ms
+ GET /therapists/khaled-habib.jpg 404 in 5607ms
+ ⨯ The requested resource isn't a valid image for /therapists/alaa-ahmed.jpg received null
+ ⨯ The requested resource isn't a valid image for /therapists/thamer-alshahrani.jpg received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ ⨯ The requested resource isn't a valid image for /therapists/khaled-habib.jpg received null
+ GET /Sarah.png 200 in 5989ms
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ ⨯ The requested resource isn't a valid image for /Sarah.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Mohammed.png 200 in 6560ms
+ ⨯ The requested resource isn't a valid image for /Mohammed.png received null
+ GET /Huda.png 200 in 6836ms
+ ⨯ The requested resource isn't a valid image for /Huda.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Faisal.png 200 in 1019ms
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ ⨯ The requested resource isn't a valid image for /Faisal.png received null
+ GET /Ahmed.png 200 in 1411ms
+ ⨯ The requested resource isn't a valid image for /Ahmed.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Amani.png 200 in 1775ms
+ ⨯ The requested resource isn't a valid image for /Amani.png received null
+ GET /en/login 200 in 1400ms
+ GET /en/dashboard 200 in 892ms
+Error: Route "/[locale]/login" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+ GET /en/login 200 in 5041ms
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /en 200 in 601ms
+ GET /en/therapists 200 in 741ms
+ GET /therapists/thamer-alshahrani.jpg 404 in 1273ms
+ ⨯ The requested resource isn't a valid image for /therapists/thamer-alshahrani.jpg received null
+ GET /therapists/khaled-habib.jpg 404 in 1541ms
+ ⨯ The requested resource isn't a valid image for /therapists/khaled-habib.jpg received null
+ GET /therapists/alaa-ahmed.jpg 404 in 1666ms
+ ⨯ The requested resource isn't a valid image for /therapists/alaa-ahmed.jpg received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ ○ Compiling /[locale]/job-listing ...
+ GET /Sarah.png 200 in 4945ms
+ GET /Mohammed.png 200 in 5019ms
+ ⨯ The requested resource isn't a valid image for /Sarah.png received null
+ ⨯ The requested resource isn't a valid image for /Mohammed.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Huda.png 200 in 6018ms
+ ⨯ The requested resource isn't a valid image for /Huda.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Faisal.png 200 in 2217ms
+ ⨯ The requested resource isn't a valid image for /Faisal.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Amani.png 200 in 3076ms
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ ⨯ The requested resource isn't a valid image for /Amani.png received null
+ GET /Ahmed.png 200 in 3921ms
+ ⨯ The requested resource isn't a valid image for /Ahmed.png received null
+ ✓ Compiled /[locale]/job-listing in 10.6s
+ GET /en/job-listing 200 in 12618ms
+ GET /en/therapists 200 in 732ms
+ GET /therapists/thamer-alshahrani.jpg 404 in 2106ms
+ GET /therapists/alaa-ahmed.jpg 404 in 2133ms
+ ⨯ The requested resource isn't a valid image for /therapists/thamer-alshahrani.jpg received null
+ ⨯ The requested resource isn't a valid image for /therapists/alaa-ahmed.jpg received null
+ GET /therapists/khaled-habib.jpg 404 in 2263ms
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ ⨯ The requested resource isn't a valid image for /therapists/khaled-habib.jpg received null
+ GET /Sarah.png 200 in 2800ms
+ ⨯ The requested resource isn't a valid image for /Sarah.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Huda.png 200 in 3857ms
+ ⨯ The requested resource isn't a valid image for /Huda.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Mohammed.png 200 in 4347ms
+ ⨯ The requested resource isn't a valid image for /Mohammed.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Faisal.png 200 in 1624ms
+ ⨯ The requested resource isn't a valid image for /Faisal.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Amani.png 200 in 3633ms
+ ⨯ The requested resource isn't a valid image for /Amani.png received null
+ GET /Ahmed.png 200 in 3729ms
+ GET /en/therapists/06e265e6-76f7-4d5b-a320-fb7d7e0019a8?book=true 200 in 5418ms
+ ⨯ The requested resource isn't a valid image for /Ahmed.png received null
+ GET /therapists/khaled-habib.jpg 404 in 380ms
+ ⨯ The requested resource isn't a valid image for /therapists/khaled-habib.jpg received null
+ GET /en/therapists 200 in 370ms
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Sarah.png 200 in 1134ms
+ ⨯ The requested resource isn't a valid image for /Sarah.png received null
+ GET /therapists/thamer-alshahrani.jpg 404 in 1731ms
+ ⨯ The requested resource isn't a valid image for /therapists/thamer-alshahrani.jpg received null
+ GET /therapists/khaled-habib.jpg 404 in 1824ms
+ ⨯ The requested resource isn't a valid image for /therapists/khaled-habib.jpg received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /therapists/alaa-ahmed.jpg 404 in 3162ms
+ GET /Huda.png 200 in 3196ms
+ ⨯ The requested resource isn't a valid image for /therapists/alaa-ahmed.jpg received null
+ ⨯ The requested resource isn't a valid image for /Huda.png received null
+ GET /Mohammed.png 200 in 3446ms
+ ⨯ The requested resource isn't a valid image for /Mohammed.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Faisal.png 200 in 3826ms
+ ⨯ The requested resource isn't a valid image for /Faisal.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Amani.png 200 in 1499ms
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ ⨯ The requested resource isn't a valid image for /Amani.png received null
+ GET /Ahmed.png 200 in 1174ms
+ ⨯ The requested resource isn't a valid image for /Ahmed.png received null
+ ✓ Compiled in 1012ms
+ ✓ Compiled in 2.5s
+Error: Route "/[locale]/therapists" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+ GET /en/therapists 200 in 6929ms
+ GET /favicon.ico?favicon.0b3bf435.ico 200 in 3281ms
+ GET /therapists/khaled-habib.jpg 404 in 1805ms
+ ⨯ The requested resource isn't a valid image for /therapists/khaled-habib.jpg received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Sarah.png 200 in 2999ms
+ ⨯ The requested resource isn't a valid image for /Sarah.png received null
+ GET /Huda.png 200 in 4149ms
+ ⨯ The requested resource isn't a valid image for /Huda.png received null
+ GET /therapists/alaa-ahmed.jpg 404 in 3919ms
+ ⨯ The requested resource isn't a valid image for /therapists/alaa-ahmed.jpg received null
+ GET /therapists/thamer-alshahrani.jpg 404 in 4635ms
+ ⨯ The requested resource isn't a valid image for /therapists/thamer-alshahrani.jpg received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Mohammed.png 200 in 5423ms
+ ⨯ The requested resource isn't a valid image for /Mohammed.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Faisal.png 200 in 2188ms
+ ⨯ The requested resource isn't a valid image for /Faisal.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Amani.png 200 in 3110ms
+ ⨯ The requested resource isn't a valid image for /Amani.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Ahmed.png 200 in 3340ms
+ ⨯ The requested resource isn't a valid image for /Ahmed.png received null
+ ✓ Compiled in 939ms
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Sarah.png 200 in 1108ms
+ ⨯ The requested resource isn't a valid image for /Sarah.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Huda.png 200 in 1945ms
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ ⨯ The requested resource isn't a valid image for /Huda.png received null
+ GET /khaled-habib.jpg 200 in 2255ms
+ ⨯ The requested resource isn't a valid image for /khaled-habib.jpg received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Mohammed.png 200 in 1213ms
+ ⨯ The requested resource isn't a valid image for /Mohammed.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /thamer-alshahrani.jpg 200 in 2979ms
+ ⨯ The requested resource isn't a valid image for /thamer-alshahrani.jpg received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /alaa-ahmed.jpg 200 in 3243ms
+ ⨯ The requested resource isn't a valid image for /alaa-ahmed.jpg received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Faisal.png 200 in 1115ms
+ ⨯ The requested resource isn't a valid image for /Faisal.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Amani.png 200 in 1456ms
+ ⨯ The requested resource isn't a valid image for /Amani.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Ahmed.png 200 in 1668ms
+ ⨯ The requested resource isn't a valid image for /Ahmed.png received null
+ ✓ Compiled in 589ms
+Error: Route "/[locale]/therapists" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+ GET /en/therapists 200 in 4337ms
+ GET /favicon.ico?favicon.0b3bf435.ico 200 in 1528ms
+ GET /en/therapists 200 in 268ms
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /en 200 in 856ms
+ GET /en/therapists 200 in 281ms
+ GET /en/therapists/51168d65-f84a-4d99-9bc5-7d48f99b3f13?book=true 200 in 1163ms
+ ✓ Compiled in 2.2s
+ ✓ Compiled in 989ms
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Mohammed.png 200 in 6644ms
+ GET /Huda.png 200 in 6858ms
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ ⨯ The requested resource isn't a valid image for /Mohammed.png received null
+ ⨯ The requested resource isn't a valid image for /Huda.png received null
+ GET /Sarah.png 200 in 7610ms
+ GET /alaa-ahmed.jpg 200 in 7618ms
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ ⨯ The requested resource isn't a valid image for /Sarah.png received null
+ ⨯ The requested resource isn't a valid image for /alaa-ahmed.jpg received null
+ GET /khaled-habib.jpg 200 in 8730ms
+ ⨯ The requested resource isn't a valid image for /khaled-habib.jpg received null
+ GET /thamer-alshahrani.jpg 200 in 8788ms
+ ⨯ The requested resource isn't a valid image for /thamer-alshahrani.jpg received null
+Error: Route "/[locale]/therapists" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Faisal.png 200 in 4025ms
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ ⨯ The requested resource isn't a valid image for /Faisal.png received null
+ GET /avatar-placeholder.jpg 200 in 4593ms
+ ⨯ The requested resource isn't a valid image for /avatar-placeholder.jpg received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Amani.png 200 in 5422ms
+ GET /Ahmed.png 200 in 5440ms
+ ⨯ The requested resource isn't a valid image for /Amani.png received null
+ ⨯ The requested resource isn't a valid image for /Ahmed.png received null
+ GET /en/therapists 200 in 5932ms
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /khaled-habib.jpg 200 in 8980ms
+ ⨯ The requested resource isn't a valid image for /khaled-habib.jpg received null
+ GET /favicon.ico?favicon.0b3bf435.ico 200 in 2083ms
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Sarah.png 200 in 2536ms
+ ⨯ The requested resource isn't a valid image for /Sarah.png received null
+ GET /Huda.png 200 in 2660ms
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ ⨯ The requested resource isn't a valid image for /Huda.png received null
+ GET /khaled-habib.jpg 200 in 3678ms
+ ⨯ The requested resource isn't a valid image for /khaled-habib.jpg received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Mohammed.png 200 in 4306ms
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ ⨯ The requested resource isn't a valid image for /Mohammed.png received null
+ GET /thamer-alshahrani.jpg 200 in 4848ms
+ ⨯ The requested resource isn't a valid image for /thamer-alshahrani.jpg received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /alaa-ahmed.jpg 200 in 5149ms
+ ⨯ The requested resource isn't a valid image for /alaa-ahmed.jpg received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Faisal.png 200 in 3649ms
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ ⨯ The requested resource isn't a valid image for /Faisal.png received null
+ GET /Ahmed.png 200 in 5008ms
+ ⨯ The requested resource isn't a valid image for /Ahmed.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /Amani.png 200 in 4848ms
+ ⨯ The requested resource isn't a valid image for /Amani.png received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /avatar-placeholder.jpg 200 in 5171ms
+ ⨯ The requested resource isn't a valid image for /avatar-placeholder.jpg received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /avatar-placeholder.jpg 200 in 396ms
+ ⨯ The requested resource isn't a valid image for /avatar-placeholder.jpg received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /avatar-placeholder.jpg 200 in 431ms
+ ⨯ The requested resource isn't a valid image for /avatar-placeholder.jpg received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /avatar-placeholder.jpg 200 in 1103ms
+ ⨯ The requested resource isn't a valid image for /avatar-placeholder.jpg received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /avatar-placeholder.jpg 200 in 983ms
+ ⨯ The requested resource isn't a valid image for /avatar-placeholder.jpg received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /avatar-placeholder.jpg 200 in 662ms
+ ⨯ The requested resource isn't a valid image for /avatar-placeholder.jpg received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /avatar-placeholder.jpg 200 in 441ms
+ ⨯ The requested resource isn't a valid image for /avatar-placeholder.jpg received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /avatar-placeholder.jpg 200 in 392ms
+ ⨯ The requested resource isn't a valid image for /avatar-placeholder.jpg received null
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /avatar-placeholder.jpg 200 in 448ms
+ ⨯ The requested resource isn't a valid image for /avatar-placeholder.jpg received null
+ ✓ Compiled in 0ms
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /avatar-placeholder.jpg 200 in 1173ms
+ ⨯ The requested resource isn't a valid image for /avatar-placeholder.jpg received null
+ ✓ Compiled in 647ms
+Error: Route "/[locale]/therapists" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+ GET /en/therapists 200 in 3818ms
+ GET /favicon.ico?favicon.0b3bf435.ico 200 in 367ms
+Error: Route "/[locale]/therapists" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+ GET /en/therapists 200 in 1221ms
+ GET /favicon.ico?favicon.0b3bf435.ico 200 in 745ms
+Error: Route "/[locale]/therapists" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+ GET /en/therapists 200 in 1611ms
+ GET /favicon.ico?favicon.0b3bf435.ico 200 in 458ms
+Error: Route "/[locale]/therapists" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+ GET /en/therapists 200 in 3905ms
+ GET /favicon.ico?favicon.0b3bf435.ico 200 in 983ms
+Error: Route "/[locale]/therapists" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+ GET /en/therapists 200 in 1793ms
+ GET /favicon.ico?favicon.0b3bf435.ico 200 in 736ms
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /en 200 in 495ms
+ GET /en/login 200 in 2132ms
+ GET /en/therapists 200 in 583ms
+ GET /en/therapists/853018fb-9be8-4ebc-a689-3eb21dff347c?book=true 200 in 468ms
+ GET /en/signup?next=%2Fen%2Ftherapists%2F853018fb-9be8-4ebc-a689-3eb21dff347c&resume=1 200 in 731ms
+ GET /en/therapists/853018fb-9be8-4ebc-a689-3eb21dff347c?book=true&resume=1&bookingId=b6e73383-573b-407c-b499-0864524e70c1 200 in 389ms
+ GET /en/login 200 in 394ms
+ GET /en/dashboard 200 in 756ms
+ ○ Compiling /[locale]/dashboard/settings ...
+ ✓ Compiled /[locale]/dashboard/settings in 6.3s
+Error: Route "/[locale]/dashboard/settings" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at SettingsPage (src/app/[locale]/dashboard/settings/page.tsx:13:37)
+  11 | export default function SettingsPage({ params }: SettingsPageProps) {
+  12 |   return (
+> 13 |     <DashboardLayout locale={params.locale}>
+     |                                     ^
+  14 |       <SettingsClient locale={params.locale} />
+  15 |     </DashboardLayout>
+  16 |   );
+Error: Route "/[locale]/dashboard/settings" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at SettingsPage (src/app/[locale]/dashboard/settings/page.tsx:14:38)
+  12 |   return (
+  13 |     <DashboardLayout locale={params.locale}>
+> 14 |       <SettingsClient locale={params.locale} />
+     |                                      ^
+  15 |     </DashboardLayout>
+  16 |   );
+  17 | }
+ GET /en/dashboard/settings 200 in 9982ms
+ ✓ Compiled in 1111ms
+ GET /en/dashboard 200 in 2557ms
+ ✓ Compiled in 1783ms
+ ✓ Compiled in 538ms
+ ✓ Compiled in 563ms
+ ✓ Compiled in 341ms
+ GET /en/therapists 200 in 476ms
+ GET /en/therapists/5a54a05b-10ff-4f26-8ac7-300388282437?book=true 200 in 323ms
+ GET /en/login 200 in 383ms
+ GET /en/dashboard 200 in 694ms
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /en 200 in 327ms
+ GET /en/therapists 200 in 256ms
+ GET /en/therapists/5a54a05b-10ff-4f26-8ac7-300388282437?book=true 200 in 477ms
+ ✓ Compiled in 672ms
+ ✓ Compiled in 413ms
+ ✓ Compiled in 1210ms
+ ✓ Compiled in 858ms
+ ✓ Compiled in 532ms
+ ✓ Compiled in 666ms
+ ✓ Compiled in 819ms
+Error: Route "/[locale]/therapists/[id]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+  معالج الصفحة - therapist: null
+  معالج الصفحة - loading: true
+  معالج الصفحة - error: 
+ GET /en/therapists/5a54a05b-10ff-4f26-8ac7-300388282437?book=true 200 in 5138ms
+ GET /favicon.ico?favicon.0b3bf435.ico 200 in 514ms
+ GET /en/dashboard 200 in 586ms
+ ✓ Compiled in 871ms
+Error: Route "/[locale]/therapists/[id]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+  معالج الصفحة - therapist: null
+  معالج الصفحة - loading: true
+  معالج الصفحة - error: 
+ GET /en/therapists/5a54a05b-10ff-4f26-8ac7-300388282437?book=true 200 in 2856ms
+ GET /favicon.ico?favicon.0b3bf435.ico 200 in 1053ms
+ ✓ Compiled in 1785ms
+ ✓ Compiled in 773ms
+ ✓ Compiled /[locale]/therapists/[id] in 129ms
+Error: Route "/[locale]/therapists/[id]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+ GET /en/therapists/5a54a05b-10ff-4f26-8ac7-300388282437?book=true 200 in 1099ms
+Error: Route "/[locale]" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at HomePage (src/app/[locale]/page.tsx:12:26)
+  10 |
+  11 | export default async function HomePage({ params }: { params: { locale: Locale } }) {
+> 12 |   const locale = (params.locale === "en" ? "en" : "ar") as "ar" | "en";
+     |                          ^
+  13 |
+  14 |   return (
+  15 |     <>
+ GET /en 200 in 770ms
+ GET /en/login 200 in 1383ms
+ GET /en/signup?next=%2Fen%2Fdashboard 200 in 1386ms
+ GET /en/dashboard 200 in 856ms
+Error: Route "/[locale]/therapists" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+ GET /en/therapists 200 in 1322ms
+ GET /en/therapists/5a54a05b-10ff-4f26-8ac7-300388282437?book=true 200 in 540ms
+ GET /en/dashboard 200 in 658ms
+ GET /en/dashboard/appointments 200 in 995ms
+Error: Route "/[locale]/dashboard/appointments" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+ GET /en/dashboard/appointments 200 in 6370ms
+ GET /favicon.ico?favicon.0b3bf435.ico 200 in 739ms
+ GET /en/dashboard 200 in 885ms
+Error: Route "/[locale]/dashboard" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+ GET /en/dashboard 200 in 2201ms
+ GET /favicon.ico?favicon.0b3bf435.ico 200 in 412ms
+Error: Route "/[locale]/dashboard" used `params.locale`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at RootLayout (src/app/[locale]/layout.tsx:32:23)
+  30 |   params: { locale: Locale };
+  31 | }) {
+> 32 |   const lang = params.locale;
+     |                       ^
+  33 |   const dir = lang === "ar" ? "rtl" : "ltr";
+  34 |
+  35 |   // You can still fetch this for other pages/sections that need it
+ GET /en/dashboard 200 in 2197ms
+ GET /favicon.ico?favicon.0b3bf435.ico 200 in 862ms

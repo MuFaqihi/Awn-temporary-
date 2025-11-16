@@ -5,11 +5,11 @@ import DashboardLayout from "@/components/DashboardLayout";
 import MedicalHistoryClient from "./MedicalHistoryClient";
 
 interface Props {
-  params: Promise<{ locale: Locale }>;
+  params: { locale: Locale };
 }
 
 export default function MedicalHistoryPage({ params }: Props) {
-  const { locale } = use(params);
+  const locale = params.locale;
   
   return (
     <DashboardLayout locale={locale}>

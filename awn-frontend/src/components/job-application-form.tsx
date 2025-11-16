@@ -121,7 +121,7 @@ export default function JobApplicationForm({ locale, onBack }: JobApplicationFor
         return step2Required.every(field => formData[field as keyof typeof formData] && 
           String(formData[field as keyof typeof formData]).trim() !== '')
       case 3:
-        return formData.sessionTypes.length > 0 && formData.startDate && formData.hourlyRate
+        return formData.sessionTypes.length > 0 && !!formData.startDate && !!formData.hourlyRate
       case 4:
         return true // Document uploads are optional in this demo
       default:

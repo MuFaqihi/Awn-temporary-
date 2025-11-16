@@ -162,7 +162,7 @@ router.post('/', validateBooking, checkAvailability, async (req, res) => {
           therapist_id,
           patient_national_id,
           user_name: patient_name,
-          user_email: patient_email,
+          user_email: patient_email ? String(patient_email).toLowerCase() : null,
           user_phone: patient_phone,
           patient_date_of_birth,
           booking_date,
@@ -426,6 +426,7 @@ router.get('/patient/:email', async (req, res) => {
     const { email } = req.params;
     const { status } = req.query;
 
+    const lookupEmail = String(email).toLowerCase();
     let query = supabase
       .from('bookings')
       .select(`
@@ -438,7 +439,7 @@ router.get('/patient/:email', async (req, res) => {
           avatar_url
         )
       `)
-      .eq('user_email', email)
+      .eq('user_email', lookupEmail)
       .order('booking_date', { ascending: false })
       .order('booking_time', { ascending: false });
 
@@ -624,18 +625,25 @@ router.put('/:id/reschedule', async (req, res) => {
 
 // دالة مساعدة للتحقق من التوفر
 async function checkAvailabilityHelper(therapist_id, date, time) {
-  const { data: existingBooking, error } = await supabase
+  const { data: existingRows, error } = await supabase
     .from('bookings')
     .select('id, user_name')
     .eq('therapist_id', therapist_id)
     .eq('booking_date', date)
     .eq('booking_time', time)
-    .in('status', ['pending', 'confirmed'])
-    .single();
+    .in('status', ['pending', 'confirmed']);
+
+  if (error) {
+    // If PostgREST returns PGRST116 it means 0 rows; treat as available
+    if (error.code === 'PGRST116') {
+      return { available: true, existingBooking: null };
+    }
+    throw error;
+  }
 
   return {
-    available: !existingBooking,
-    existingBooking
+    available: !(Array.isArray(existingRows) && existingRows.length > 0),
+    existingBooking: Array.isArray(existingRows) && existingRows.length > 0 ? existingRows[0] : null
   };
 }
 

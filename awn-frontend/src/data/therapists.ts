@@ -233,7 +233,7 @@ export const therapists: Therapist[] = [
     reviewCount: 0,
     basePrice: 200,
     languages: ["Arabic"],
-    modes: ["online"],
+    modes: ["online", "home"],
     durations: [45, 60],
     bio: {
       ar: "العلاج الطبيعي العضلي الهيكلي والإصابات الرياضية.",
@@ -266,7 +266,7 @@ export const therapists: Therapist[] = [
     reviewCount: 0,
     basePrice: 200,
     languages: ["Arabic"],
-    modes: ["home"],
+    modes: ["home", "online"],
     durations: [45, 60],
     bio: {
       ar: "إعادة التأهيل والعلاج الطبيعي العام.",

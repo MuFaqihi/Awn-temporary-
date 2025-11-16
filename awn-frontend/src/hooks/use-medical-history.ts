@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import type { MedicalHistory } from '@/lib/types';
+import { apiService } from '@/lib/api';
 
 const createInitialHistory = (): MedicalHistory => ({
   snapshot: {
@@ -45,16 +46,47 @@ export function useMedicalHistory() {
   const [isDirty, setIsDirty] = useState(false);
 
   useEffect(() => {
-    // Simulate loading initial data
-    setTimeout(() => {
-      setHistory(createInitialHistory());
-      setIsLoading(false);
-    }, 500);
+    // Try to load from backend; fall back to local initial data
+    let mounted = true;
+    (async () => {
+      try {
+        const res: any = await apiService.getMedicalHistory();
+        if (!mounted) return;
+        if (res && res.success && res.data) {
+          // Ensure the returned object has all expected sub-structures
+          const base = createInitialHistory();
+          const incoming = res.data || {};
+          const merged = {
+            ...base,
+            ...incoming,
+            snapshot: { ...base.snapshot, ...(incoming.snapshot || {}) },
+            consent: { ...base.consent, ...(incoming.consent || {}) },
+            goals: { ...base.goals, ...(incoming.goals || {}) },
+            contraindications: { ...base.contraindications, ...(incoming.contraindications || {}) }
+          };
+          setHistory(merged);
+        } else {
+          setHistory(createInitialHistory());
+        }
+      } catch (err) {
+        // network or 404 - fallback to local initial
+        setHistory(createInitialHistory());
+      } finally {
+        if (mounted) setIsLoading(false);
+      }
+    })();
+
+    return () => { mounted = false };
   }, []);
 
   const updateHistory = (updates: Partial<MedicalHistory>) => {
     setHistory(prev => {
-      if (!prev) return null;
+      if (!prev) {
+        const base = createInitialHistory();
+        const updatedBase = { ...base, ...updates, lastUpdated: new Date().toISOString() };
+        setIsDirty(true);
+        return updatedBase;
+      }
       const updated = { 
         ...prev, 
         ...updates, 
@@ -67,21 +99,25 @@ export function useMedicalHistory() {
 
   const saveNow = async () => {
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 500));
+      if (!history) throw new Error('Nothing to save');
+      await apiService.saveMedicalHistory(history);
       setIsDirty(false);
-      console.log('Medical history saved');
+      console.log('Medical history saved to server');
     } catch (error) {
       console.error('Failed to save:', error);
       throw error;
     }
   };
 
-  const isSetupComplete = history ? (
-    history.snapshot.primaryConcern.length > 0 &&
+  const isSetupComplete = Boolean(
+    history &&
+    history.snapshot &&
+    typeof history.snapshot.primaryConcern === 'string' &&
+    history.snapshot.primaryConcern.trim().length > 0 &&
+    history.consent &&
     history.consent.consentToTreatment &&
     history.consent.informedOfRisks
-  ) : false;
+  );
 
   return {
     history,

@@ -5,11 +5,13 @@ import { useRouter, useSearchParams } from "next/navigation"
 import Image from "next/image"
 import { Star, MapPin, Clock, Shield, Award, Calendar, CheckCircle, Globe, Users, Heart, X, Bookmark, BookmarkCheck } from "lucide-react"
 import { Button } from "@/components/ui/base-button"
+import { toastManager } from '@/hooks/use-toast'
 import { Input } from "@/components/ui/input"
 import { CalendarPicker } from "@/components/ui/calendar-picker"
 import type { Locale } from "@/lib/i18n"
+import { API_BASE_URL } from '@/lib/api'
 
-type Mode = "home" | "online"
+type Mode = "home" | "online" | ""
 
 const DURATIONS = [30, 45, 60, 90, 120]
 
@@ -39,12 +41,28 @@ function formatDuration(duration: number, isArabic: boolean) {
   return `${duration} ${isArabic ? "دقيقة" : "min"}`
 }
 
+function normalizeImage(src?: string) {
+  if (!src) return src || ''
+  // backend may return paths like '/therapists/khaled-habib.jpg' while public files are '/khalid.jpg'
+  // If path contains '/therapists/' try to map to root by taking the basename
+  try {
+    if (src.startsWith('/therapists/')) {
+      const parts = src.split('/')
+      const base = parts[parts.length - 1]
+      return base ? `/${base}` : src
+    }
+  } catch (e) {
+    // ignore
+  }
+  return src
+}
+
 interface Props {
-  params: Promise<{ locale: Locale; id: string }>
+  params: { locale: Locale; id: string }
 }
 
 export default function TherapistPage({ params }: Props) {
-  const { locale, id } = use(params)
+  const { locale, id } = params
   const isArabic = locale === "ar"
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -62,7 +80,7 @@ export default function TherapistPage({ params }: Props) {
         setLoading(true)
         console.log('📡 جلب بيانات المعالج من الباك إند:', id)
         
-        const response = await fetch(`http://localhost:5000/api/therapist/${id}`)
+        const response = await fetch(`${API_BASE_URL}/therapist/${id}`)
         
         if (!response.ok) {
           throw new Error('المعالج غير موجود')
@@ -91,29 +109,67 @@ export default function TherapistPage({ params }: Props) {
     }
   }, [id])
 
-  // State for saved therapists
-  const [savedTherapists, setSavedTherapists] = useState<string[]>([
-    "nismah-alalshi", 
-    "khalid-habib",
-  ])
+  // State for saved therapists (fetched from backend when possible)
+  const [savedTherapists, setSavedTherapists] = useState<string[]>([])
 
   const [mounted, setMounted] = useState(false)
   useEffect(() => {
     setMounted(true)
   }, [])
 
-  const toggleSaved = (therapistId: string) => {
-    setSavedTherapists(prev => 
-      prev.includes(therapistId) 
-        ? prev.filter(id => id !== therapistId)
-        : [...prev, therapistId]
-    )
+  const toggleSaved = async (therapistId: string) => {
+    const currentlySaved = savedTherapists.includes(therapistId);
+
+    // Optimistic UI update
+    setSavedTherapists(prev => currentlySaved ? prev.filter(id => id !== therapistId) : [...prev, therapistId]);
+
+    try {
+      const api = (await import('@/lib/api')).apiService;
+
+      // Ensure user is authenticated - apiService will throw Unauthorized if not
+      const action = currentlySaved ? 'remove' : 'add';
+      const res: any = await api.toggleFavorite(therapistId, action);
+
+      // Refresh favorites list from backend to ensure consistency
+      const updated: any = await api.getFavorites();
+      const items = Array.isArray(updated) ? updated : (updated?.data || []);
+      setSavedTherapists(items.map((i: any) => String(i.therapist_id)));
+    } catch (err) {
+      console.error('Failed to toggle favorite on therapist page', err);
+      // revert optimistic update on error
+      setSavedTherapists(prev => currentlySaved ? [...prev, therapistId] : prev.filter(id => id !== therapistId));
+
+      // If unauthorized, redirect to login/signup flow
+      try {
+        const msg = err instanceof Error ? err.message : String(err);
+        if (msg.includes('Unauthorized') || msg.includes('401')) {
+          router.push(`/${locale}/login`);
+        }
+      } catch (e) {}
+    }
   }
+
+  // Load saved favorites from backend when component mounts (if logged in)
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const api = (await import('@/lib/api')).apiService;
+        const res: any = await api.getFavorites();
+        const items = Array.isArray(res) ? res : (res?.data || []);
+        if (cancelled) return;
+        setSavedTherapists(items.map((i: any) => String(i.therapist_id)));
+      } catch (e) {
+        // ignore - user may be unauthenticated; saved list will stay empty
+      }
+    })();
+    return () => { cancelled = true };
+  }, [])
 
   // Booking state
   const [showBooking, setShowBooking] = useState(shouldOpenBooking)
-  const [step, setStep] = useState<1 | 2 | 3 | 4 | 5>(1)
-  const [mode, setMode] = useState<Mode>("online")
+  const [step, setStep] = useState<1 | 2 | 3 | 4>(1)
+  const [mode, setMode] = useState<Mode>("")
   const [duration, setDuration] = useState<number>(60)
   const [dateISO, setDateISO] = useState<string>("")
   const [time, setTime] = useState<string>("")
@@ -134,9 +190,8 @@ export default function TherapistPage({ params }: Props) {
   const canNext = step === 1
     ? !!(dateISO && time && mode && duration)
     : step === 2
-    ? !!(details.name && details.phone && details.email && (mode !== "home" || details.address))
-    : step === 3 ? true
-    : step === 4 ? !!paymentMethod
+    ? !!(dateISO && time && mode && duration && details.name && details.phone && details.email && (mode !== "home" || details.address))
+    : step === 3 ? !!paymentMethod
     : true
 
   //   دالة التحقق من البيانات قبل الإرسال
@@ -184,10 +239,28 @@ export default function TherapistPage({ params }: Props) {
       console.log('📤 إرسال بيانات الحجز للباك إند:', bookingData);
 
       //   إرسال طلب الحجز للباك إند
-      const response = await fetch('http://localhost:5000/api/booking', {
+      // If user is not authenticated, save pending booking and redirect to signup/login
+      const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+      if (!token) {
+        // save booking data locally and redirect to signup with next param to return
+        if (typeof window !== 'undefined') {
+          try {
+            localStorage.setItem('pendingBooking', JSON.stringify({ bookingData, therapistId: therapist.id }));
+          } catch (e) {
+            console.warn('Failed to persist pending booking', e);
+          }
+        }
+        // send user to signup (or login) to create an account before confirming
+        const nextUrl = `/${locale}/therapists/${therapist.id}?book=true&resume=1`;
+        router.push(`/${locale}/signup?next=${encodeURIComponent(nextUrl)}`);
+        return;
+      }
+
+      const response = await fetch(`${API_BASE_URL}/booking`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         body: JSON.stringify(bookingData),
       });
@@ -198,7 +271,7 @@ export default function TherapistPage({ params }: Props) {
       if (result.success) {
         const bookingId = result.data.booking_id || result.data.id;
         setBookingId(bookingId);
-        setStep(5);
+        setStep(4);
         console.log('🎉 تم إنشاء الحجز بنجاح - ID:', bookingId);
       } else {
         console.error(' خطأ من الباك إند:', result.error);
@@ -213,11 +286,94 @@ export default function TherapistPage({ params }: Props) {
     }
   };
 
+  // If user returned from signup/login with resume flag, restore pending booking
+  useEffect(() => {
+    try {
+      const resume = searchParams.get('resume');
+      if (resume === '1' && typeof window !== 'undefined') {
+        const raw = localStorage.getItem('pendingBooking');
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && parsed.bookingData) {
+            const data = parsed.bookingData;
+            // populate local state with saved booking data
+            setMode(data.session_type || data.kind || mode);
+            setDuration(data.session_duration || duration);
+            setDateISO(data.booking_date || data.date || dateISO);
+            setTime(data.booking_time || data.time || time);
+
+            // first apply booking data
+            setDetails(prev => ({
+              ...prev,
+              name: data.patient_name || prev.name,
+              email: data.patient_email || prev.email,
+              phone: data.patient_phone || prev.phone,
+              address: data.address || prev.address,
+              notes: data.notes || prev.notes,
+            }));
+
+            // if user is now logged in, prefer user's account info to keep them in sync
+            try {
+              const rawUser = localStorage.getItem('user');
+              if (rawUser) {
+                const parsedUser = JSON.parse(rawUser);
+                const userName = parsedUser?.first_name || parsedUser?.name || parsedUser?.fullName || '';
+                // if we have a single full name, try to use it
+                const nameFromUser = userName || (parsedUser?.first_name && parsedUser?.last_name ? `${parsedUser.first_name} ${parsedUser.last_name}` : '')
+                setDetails(prev => ({
+                  ...prev,
+                  name: nameFromUser || prev.name,
+                  email: parsedUser?.email || prev.email,
+                  phone: parsedUser?.phone || prev.phone,
+                }));
+              }
+            } catch (ux) {
+              console.warn('Failed to parse user from localStorage', ux);
+            }
+
+            // move to review step so user can confirm (we removed the separate Details step)
+            setShowBooking(true)
+            setStep(2)
+            // if bookingId was provided (auto-submitted after signup), show confirmation
+            const bookingIdParam = searchParams.get('bookingId')
+            if (bookingIdParam) {
+              setBookingId(bookingIdParam)
+              setStep(4)
+            }
+            // localStorage.removeItem('pendingBooking'); // keep for debugging if needed
+          }
+        }
+      }
+    } catch (e) {
+      console.error('Failed to restore pending booking', e);
+    }
+  }, [searchParams]);
+
   //   دالة للحصول على الأوقات المتاحة من الباك إند
   const getAvailableSlots = (date: string, sessionMode: Mode) => {
     return therapist?.availability?.[date]?.[sessionMode] || ["09:00", "10:00", "11:00", "14:00", "15:00", "16:00"]
   }
 
+  // if therapist provides modes, ensure default selection is unset so user must choose
+  useEffect(() => {
+    try {
+      if (therapist?.modes && therapist.modes.length > 0) {
+        // leave empty so user explicitly picks; but if previous selection invalid, reset
+        if (!therapist.modes.includes(mode as any)) {
+          setMode("")
+        }
+      }
+    } catch (e) {
+      // ignore
+    }
+  }, [therapist])
+
+  // Helper to robustly extract a phone number from various user shapes
+  const extractPhoneFromUser = (u: any) => {
+    if (!u) return ''
+    return u.phone || u.mobile || u.telephone || u?.contact?.phone || u?.attributes?.phone || u?.patients?.phone || u?.patient?.phone || ''
+  }
+  // Navigation handlers
   const handleBack = () => {
     if (step > 1) {
       setStep((s) => (s - 1) as any)
@@ -225,6 +381,70 @@ export default function TherapistPage({ params }: Props) {
   }
 
   const handleNext = () => {
+    // From Select -> Review
+    if (step === 1) {
+      if (!dateISO || !time) {
+        toastManager.add({ title: isArabic ? 'الرجاء اختيار التاريخ والوقت' : 'Please select date and time', type: 'error' })
+        return
+      }
+
+      if (!mode) {
+        toastManager.add({ title: isArabic ? 'الرجاء اختيار نوع الجلسة' : 'Please select session type', type: 'error' })
+        return
+      }
+
+      if (therapist?.modes && therapist.modes.length > 0 && !therapist.modes.includes(mode as any)) {
+        toastManager.add({ title: isArabic ? 'نوع الجلسة غير متاح لهذا الأخصائي' : 'Selected session type is not available for this therapist', type: 'error' })
+        return
+      }
+
+      const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+      if (!token) {
+        const bookingData = {
+          therapist_id: therapist.id,
+          patient_name: details.name || '',
+          patient_email: details.email || '',
+          patient_phone: details.phone || '',
+          booking_date: dateISO,
+          booking_time: time,
+          session_type: mode,
+          session_duration: duration,
+          notes: details.notes || '',
+          address: mode === 'home' ? details.address || '' : undefined,
+        }
+
+        try { localStorage.setItem('pendingBooking', JSON.stringify({ bookingData, therapistId: therapist.id })) } catch (e) { console.warn('Failed to persist pending booking', e) }
+
+        const nextUrl = `/${locale}/therapists/${therapist.id}`
+        router.push(`/${locale}/signup?next=${encodeURIComponent(nextUrl)}&resume=1`)
+        return
+      }
+
+      // Prefill from logged-in user and go to Review
+      try {
+        const rawUser = localStorage.getItem('user')
+        if (rawUser) {
+          const parsedUser = JSON.parse(rawUser)
+          const userName = parsedUser?.first_name || parsedUser?.name || ''
+          const nameFromUser = userName || (parsedUser?.first_name && parsedUser?.last_name ? `${parsedUser.first_name} ${parsedUser.last_name}` : '')
+          setDetails(prev => ({
+            ...prev,
+            name: nameFromUser || prev.name,
+            email: parsedUser?.email || prev.email,
+            phone: extractPhoneFromUser(parsedUser) || prev.phone,
+            address: parsedUser?.address || prev.address,
+          }))
+        }
+      } catch (e) {
+        console.warn('Failed to read user for prefill', e)
+      }
+
+      setShowBooking(true)
+      setStep(2)
+      return
+    }
+
+    // Normal next for other steps
     if (step < 4) {
       setStep((s) => (s + 1) as any)
     }
@@ -293,9 +513,10 @@ export default function TherapistPage({ params }: Props) {
               <div className="relative w-48 h-48 mx-auto sm:mx-0 flex-shrink-0">
                 {therapist.avatar || therapist.image ? (
                   <Image
-                    src={therapist.avatar || therapist.image}
+                    src={normalizeImage(therapist.avatar || therapist.image)}
                     alt={therapist.name[locale]}
                     fill
+                    sizes="(max-width: 1024px) 200px, 384px"
                     className="rounded-xl object-cover"
                     priority
                   />
@@ -570,17 +791,16 @@ export default function TherapistPage({ params }: Props) {
                 {/* Stepper */}
                 <div className="flex flex-wrap gap-2 mb-6 text-sm">
                   {[
-                    isArabic ? "اختيار" : "Select",
-                    isArabic ? "التفاصيل" : "Details", 
-                    isArabic ? "مراجعة" : "Review",
-                    isArabic ? "الدفع" : "Payment",
-                    isArabic ? "تم الحجز" : "Confirmed",
-                  ].map((label, i) => (
-                    <span key={label}
-                      className={`px-3 py-1 rounded-full ${i + 1 === step ? "bg-primary text-white" : "bg-primary/10 text-primary"}`}>
-                      {label}
-                    </span>
-                  ))}
+                      isArabic ? "اختيار" : "Select",
+                      isArabic ? "مراجعة" : "Review",
+                      isArabic ? "الدفع" : "Payment",
+                      isArabic ? "تم الحجز" : "Confirmed",
+                    ].map((label, i) => (
+                      <span key={label}
+                        className={`px-3 py-1 rounded-full ${i + 1 === step ? "bg-primary text-white" : "bg-primary/10 text-primary"}`}>
+                        {label}
+                      </span>
+                    ))}
                 </div>
 
                 {/* STEP 1: Select */}
@@ -660,62 +880,8 @@ export default function TherapistPage({ params }: Props) {
                   </div>
                 )}
 
-                {/* STEP 2: Details */}
+                {/* STEP 2: Review (contact details are shown here; Details step removed) */}
                 {step === 2 && (
-                  <div className="space-y-6">
-                    <div>
-                      <label className="block text-sm font-medium mb-2">{isArabic ? "الاسم الكامل" : "Full Name"}</label>
-                      <Input
-                        value={details.name}
-                        onChange={(e) => setDetails({...details, name: e.target.value})}
-                        placeholder={isArabic ? "أدخل اسمك الكامل" : "Enter your full name"}
-                      />
-                    </div>
-                     
-                    <div>
-                      <label className="block text-sm font-medium mb-2">{isArabic ? "البريد الإلكتروني" : "Email Address"}</label>
-                      <Input
-                        type="email"
-                        value={details.email}
-                        onChange={(e) => setDetails({...details, email: e.target.value})}
-                        placeholder={isArabic ? "your@email.com" : "your@email.com"}
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium mb-2">{isArabic ? "رقم الهاتف" : "Phone Number"}</label>
-                      <Input
-                        value={details.phone}
-                        onChange={(e) => setDetails({...details, phone: e.target.value})}
-                        placeholder={isArabic ? "05xxxxxxxx" : "05xxxxxxxx"}
-                      />
-                    </div>
-
-                    {mode === "home" && (
-                      <div>
-                        <label className="block text-sm font-medium mb-2">{isArabic ? "العنوان" : "Address"}</label>
-                        <Input
-                          value={details.address}
-                          onChange={(e) => setDetails({...details, address: e.target.value})}
-                          placeholder={isArabic ? "أدخل العنوان كاملاً" : "Enter complete address"}
-                        />
-                      </div>
-                    )}
-
-                    <div>
-                      <label className="block text-sm font-medium mb-2">{isArabic ? "ملاحظات (اختياري)" : "Notes (Optional)"}</label>
-                      <textarea
-                        value={details.notes}
-                        onChange={(e) => setDetails({...details, notes: e.target.value})}
-                        placeholder={isArabic ? "أي معلومات إضافية..." : "Any additional information..."}
-                        className="w-full p-3 border rounded-lg resize-none h-24"
-                      />
-                    </div>
-                  </div>
-                )}
-
-                {/* STEP 3: Review */}
-                {step === 3 && (
                   <div className="space-y-6">
                     <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-xl p-6 border border-primary/10">
                       <div className="flex items-center gap-3 mb-4">
@@ -724,13 +890,12 @@ export default function TherapistPage({ params }: Props) {
                         </div>
                         <h3 className="font-bold text-lg text-gray-900">{isArabic ? "ملخص الحجز" : "Booking Summary"}</h3>
                       </div>
-                      
+
                       <div className="space-y-4">
-                        {/*   Therapist Info - Fixed Image */}
                         <div className="flex items-center gap-3 p-3 bg-white/80 rounded-lg">
                           {therapist.image ? (
                             <Image 
-                              src={therapist.image} 
+                              src={normalizeImage(therapist.image)} 
                               alt={therapist.name[locale]}
                               width={40}
                               height={40}
@@ -747,16 +912,12 @@ export default function TherapistPage({ params }: Props) {
                           </div>
                         </div>
 
-                        {/* Session Details */}
                         <div className="grid grid-cols-2 gap-4">
                           <div className="bg-white/80 rounded-lg p-3">
                             <div className="text-xs text-gray-500 mb-1">{isArabic ? "التاريخ والوقت" : "Date & Time"}</div>
-                            <div className="font-medium text-gray-900">
-                              {new Date(dateISO).toLocaleDateString(locale === "ar" ? "ar-SA" : "en-GB")}
-                            </div>
+                            <div className="font-medium text-gray-900">{new Date(dateISO).toLocaleDateString(locale === "ar" ? "ar-SA" : "en-GB")}</div>
                             <div className="text-sm text-gray-600">{time}</div>
                           </div>
-                          
                           <div className="bg-white/80 rounded-lg p-3">
                             <div className="text-xs text-gray-500 mb-1">{isArabic ? "النوع والمدة" : "Type & Duration"}</div>
                             <div className="font-medium text-gray-900">{modeLabel(mode, isArabic)}</div>
@@ -764,7 +925,6 @@ export default function TherapistPage({ params }: Props) {
                           </div>
                         </div>
 
-                        {/* Contact Info */}
                         <div className="bg-white/80 rounded-lg p-3">
                           <div className="text-xs text-gray-500 mb-2">{isArabic ? "معلومات الاتصال" : "Contact Information"}</div>
                           <div className="space-y-1 text-sm">
@@ -777,7 +937,6 @@ export default function TherapistPage({ params }: Props) {
                           </div>
                         </div>
 
-                        {/* Price Breakdown */}
                         <div className="bg-white rounded-lg p-4 border border-primary/20">
                           <div className="space-y-2 text-sm">
                             <div className="flex justify-between">
@@ -807,8 +966,10 @@ export default function TherapistPage({ params }: Props) {
                   </div>
                 )}
 
-                {/* STEP 4: Payment */}
-                {step === 4 && (
+                {/* NOTE: Consolidated Review content above (step 2) - removed duplicate block */}
+
+                {/* STEP 3: Payment */}
+                {step === 3 && (
                   <div className="space-y-6">
                     <h3 className="text-lg font-semibold">
                       {isArabic ? "طريقة الدفع" : "Payment Method"}
@@ -912,8 +1073,8 @@ export default function TherapistPage({ params }: Props) {
                   </div>
                 )}
 
-                {/* STEP 5: Confirmation */}
-                {step === 5 && (
+                {/* STEP 4: Confirmation */}
+                {step === 4 && (
                   <div className="text-center space-y-6">
                     <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
                       <CheckCircle className="w-8 h-8 text-green-600" />
@@ -930,11 +1091,16 @@ export default function TherapistPage({ params }: Props) {
                       <p className="mb-2">{isArabic ? "سنرسل لك رسالة تأكيد قريباً" : "We'll send you a confirmation message shortly"}</p>
                       <p>{isArabic ? "يمكنك إدارة حجزك من حسابك" : "You can manage your booking from your account"}</p>
                     </div>
+                    <div className="flex justify-center">
+                      <Button onClick={() => router.push(`/${locale}/dashboard`)} className="bg-primary hover:bg-primary/90">
+                        {isArabic ? 'اذهب إلى لوحة التحكم' : 'Go to Dashboard'}
+                      </Button>
+                    </div>
                   </div>
                 )}
 
                 {/* Footer Buttons */}
-                {step < 5 && (
+                {step < 4 && (
                   <div className="flex justify-between mt-8 pt-6 border-t">
                     <Button 
                       variant="outline" 
@@ -943,8 +1109,7 @@ export default function TherapistPage({ params }: Props) {
                     >
                       {isArabic ? "رجوع" : "Back"}
                     </Button>
-                    
-                    {step < 4 ? (
+                    {step < 3 ? (
                       <Button 
                         disabled={!canNext} 
                         onClick={handleNext}

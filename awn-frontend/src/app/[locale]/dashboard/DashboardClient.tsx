@@ -1,6 +1,7 @@
 "use client";
 import * as React from "react";
 import { useState, useEffect } from "react";
+import { apiService } from '@/lib/api';
 import type { Locale } from "@/lib/i18n";
 import { CalendarDays, Clock, MapPin, Video, Shield, AlertTriangle, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -21,60 +22,121 @@ export default function DashboardClient({ locale }: Props) {
   const medicalHistory = useMedicalHistoryStatus();
   const labels = getMedicalHistoryLabels(locale);
   
-  // State for appointments - so we can update the list when cancelled
-  const [appointments, setAppointments] = useState<Appointment[]>([
-    {
-      id:"thamer-alshahrani",
-      therapistId: "thamer-alshahrani",
-      date: "2025-11-04",
-      time: "10:30",
-      kind: "home",
-      status: "upcoming",
-    },
-    {
-      id: "alaa-ahmed", 
-      therapistId: "alaa-ahmed",
-      date: "2025-11-06",
-      time: "14:00",
-      kind: "online",
-      status: "upcoming",
-      meetLink: "https://meet.google.com/abc-def-ghi",
-    },
-  ]);
+  // State for appointments - will be loaded from backend
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [loadingAppointments, setLoadingAppointments] = useState(true);
   
   // Fix hydration by ensuring client-side only rendering
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  function normalizeImage(src?: string) {
+    if (!src) return '';
+    try {
+      if (src.startsWith('/therapists/')) {
+        const parts = src.split('/');
+        const base = parts[parts.length - 1];
+        return base ? `/${base}` : src;
+      }
+    } catch (e) {}
+    return src;
+  }
+
+  // Fetch appointments for the logged-in patient (client) only
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        window.location.href = `/${locale}/login`;
+        return;
+      }
+    }
+
+    let cancelled = false;
+
+    const load = async () => {
+      try {
+        setLoadingAppointments(true);
+
+        // Fetch therapists list to map UUIDs -> therapist profiles when appointments contain only IDs
+        let therapistList: any[] = [];
+        try {
+          const tRes: any = await apiService.getTherapists();
+          therapistList = Array.isArray(tRes) ? tRes : (tRes?.data || []);
+        } catch (e) {
+          console.warn('Failed to fetch global therapists list for mapping:', e);
+        }
+
+        const res: any = await apiService.getAppointments();
+        const items = Array.isArray(res) ? res : (res?.data || []);
+
+        const mapped: Appointment[] = (items || []).map((it: any) => ({
+          id: String(it.id),
+          source: it.source || (it.booking_date ? 'bookings' : 'appointments'),
+          therapistId: it.therapist_id || it.therapistId || (it.therapists?.id) || '',
+          date: it.date || it.booking_date || (it.created_at ? it.created_at.split('T')[0] : ''),
+          time: it.time || it.booking_time || '',
+          kind: (it.kind || it.session_type || 'home') as 'online' | 'home',
+          status: (it.status || 'upcoming') as Appointment['status'],
+          meetLink: it.meet_link || it.meetLink || undefined,
+          // preserve raw note fields and nested therapist info when present
+          note: it.note || it.patient_notes || it.notes || '',
+          therapists: it.therapists || null,
+          // include a resolved therapist object when possible
+          __resolvedTherapist: it.therapists || therapistList.find((t: any) => String(t.id) === String(it.therapist_id) || String(t.slug) === String(it.therapist_id)) || null
+        }));
+
+        if (cancelled) return;
+
+        setAppointments(mapped.filter(a => a.status === 'upcoming' || a.status === 'pending'));
+      } catch (err) {
+        console.error('Failed to load appointments', err);
+      } finally {
+        if (!cancelled) setLoadingAppointments(false);
+      }
+    };
+
+    load();
+
+    return () => { cancelled = true; };
+  }, [locale]);
   
   // Mock user data - replace with actual user data
-  const userName = "Rawan";
+  const [userName, setUserName] = useState('');
 
-  // Updated therapist notes with correct IDs
-  const therapistNotes = [
-    {
-      id:"thamer-alshahrani",
-      therapistId: "thamer-alshahrani",
-      appointmentDate: "2025-10-20",
-      note: ar 
-        ? "المريض يظهر تحسناً جيداً في حركة الكتف. ننصح بمواصلة التمارين المنزلية وتجنب الحركات المفاجئة."
-        : "Patient showing good improvement in shoulder mobility. Recommend continuing home exercises and avoiding sudden movements."
-    },
-    {
-      id: "abdullah-alshahrani", 
-      therapistId: "abdullah-alshahrani",
-      appointmentDate: "2025-10-15",
-      note: ar
-        ? "تم البدء في العلاج الطبيعي للكتف الأيمن. استجابة جيدة للعلاج والمريض متعاون."
-        : "Started physiotherapy for right shoulder. Good response to treatment and patient is cooperative."
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('user');
+      if (!raw) return setUserName('');
+      const u = JSON.parse(raw || '{}');
+      const first = u.first_name || u.firstName || u.first || '';
+      const last = u.last_name || u.lastName || u.last || '';
+      const full = u.name || u.full_name || `${first} ${last}`.trim();
+      const name = (full && String(full).trim()) || first || last || '';
+      setUserName(name || '');
+    } catch (err) {
+      console.error('Failed to parse user from localStorage', err);
+      setUserName('');
     }
-  ];
+  }, []);
+
+  // Derive therapist notes from appointments (latest notes first)
+  const therapistNotes = appointments
+    .filter(a => a.note && String(a.note).trim().length > 0)
+    .slice()
+    .sort((x, y) => (new Date(y.date).getTime() - new Date(x.date).getTime()))
+    .slice(0, 6)
+    .map((a) => ({
+      id: a.id,
+      therapistId: a.therapistId,
+      appointmentDate: a.date,
+      note: a.note || a.patient_notes || a.notes || ''
+    }));
 
   const handleReschedule = async (appointmentId: string, newDate: Date, newTime: string, mode: string, note?: string) => {
     console.log("Rescheduling appointment:", appointmentId, { newDate, newTime, mode, note });
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Update the appointment in the list
+    // Optimistic update
     setAppointments(prev => prev.map(apt => 
       apt.id === appointmentId 
         ? { 
@@ -85,17 +147,86 @@ export default function DashboardClient({ locale }: Props) {
           }
         : apt
     ));
-    
-    console.log(ar ? "تمت إعادة الجدولة بنجاح" : "Rescheduled successfully");
+
+    try {
+      const payload = { date: newDate.toISOString().split('T')[0], time: newTime, kind: mode, note: note || '' };
+      // If this item came from bookings, call the bookings reschedule endpoint
+      const appt = appointments.find(a => a.id === appointmentId) as any;
+      if (appt && appt.source === 'bookings') {
+        // bookings endpoint expects different body shape (new_booking_date/new_booking_time)
+        await apiService.rescheduleBooking(appointmentId, {
+          new_booking_date: payload.date,
+          new_booking_time: payload.time,
+          reschedule_reason: payload.note,
+          therapist_id: appt.therapist_id || appt.therapistId
+        });
+      } else {
+        await apiService.rescheduleAppointment(appointmentId, payload);
+      }
+      console.log(ar ? "تمت إعادة الجدولة بنجاح" : "Rescheduled successfully");
+    } catch (err) {
+      console.error('Reschedule failed, refetching appointments', err);
+      try {
+        const res: any = await apiService.getAppointments();
+        const items = Array.isArray(res) ? res : (res?.data || []);
+        const mapped: Appointment[] = (items || []).map((it: any) => ({
+          id: String(it.id),
+          therapistId: it.therapist_id || it.therapistId || (it.therapists?.id) || '',
+          date: it.date || it.booking_date || (it.created_at ? it.created_at.split('T')[0] : ''),
+          time: it.time || it.booking_time || '',
+          kind: (it.kind || it.session_type || 'home') as 'online' | 'home',
+          status: (it.status || 'upcoming') as Appointment['status'],
+          meetLink: it.meet_link || it.meetLink || undefined,
+              // preserve nested therapist info when available
+              therapists: it.therapists || null,
+        }));
+
+        setAppointments(mapped.filter(a => a.status === 'upcoming' || a.status === 'pending'));
+      } catch (e) {
+        console.error('Failed to reload appointments after reschedule error', e);
+      }
+    }
   };
 
   const handleCancel = (appointmentId: string) => {
     console.log("Cancelling appointment:", appointmentId);
-    
-    // Remove the appointment from the list
-    setAppointments(prev => prev.filter(apt => apt.id !== appointmentId));
-    
-    console.log(ar ? "تم إلغاء الموعد" : "Appointment cancelled");
+    // Optimistic UI: remove from list and mark cancelled
+    const appt = appointments.find(a => a.id === appointmentId);
+    if (appt) {
+      setAppointments(prev => prev.filter(apt => apt.id !== appointmentId));
+    }
+
+    (async () => {
+      try {
+        const appt = appointments.find(a => a.id === appointmentId) as any;
+        if (appt && appt.source === 'bookings') {
+          await apiService.cancelBooking(appointmentId, { cancellation_reason: 'Cancelled by patient', cancelled_by: appt.user_email || null });
+        } else {
+          await apiService.cancelAppointment(appointmentId);
+        }
+        console.log(ar ? 'تم إلغاء الموعد' : 'Appointment cancelled');
+      } catch (err) {
+        console.error('Cancel failed, refetching appointments', err);
+        try {
+          const res: any = await apiService.getAppointments();
+          const items = Array.isArray(res) ? res : (res?.data || []);
+          const mapped: Appointment[] = (items || []).map((it: any) => ({
+            id: String(it.id),
+            therapistId: it.therapist_id || it.therapistId || (it.therapists?.id) || '',
+            date: it.date || it.booking_date || (it.created_at ? it.created_at.split('T')[0] : ''),
+            time: it.time || it.booking_time || '',
+            kind: (it.kind || it.session_type || 'home') as 'online' | 'home',
+            status: (it.status || 'upcoming') as Appointment['status'],
+            meetLink: it.meet_link || it.meetLink || undefined,
+            therapists: it.therapists || null,
+          }));
+
+          setAppointments(mapped.filter(a => a.status === 'upcoming' || a.status === 'pending'));
+        } catch (e) {
+          console.error('Failed to reload appointments after cancel error', e);
+        }
+      }
+    })();
   };
 
   const handleNewAppointment = () => {
@@ -130,6 +261,10 @@ export default function DashboardClient({ locale }: Props) {
       upcoming: {
         label: ar ? "قادم" : "Upcoming",
         className: "bg-blue-100 text-blue-800"
+      },
+      pending: {
+        label: ar ? "قيد الانتظار" : "Pending",
+        className: "bg-amber-100 text-amber-800"
       },
       completed: {
         label: ar ? "مكتمل" : "Completed", 
@@ -275,7 +410,17 @@ export default function DashboardClient({ locale }: Props) {
               </GradientSlideButton>
             </div>
 
-            {appointments.length === 0 ? (
+            {loadingAppointments ? (
+              <div className="text-center py-8 sm:py-12">
+                <div className="mx-auto h-12 w-12 border-4 border-teal-600 border-t-transparent rounded-full animate-spin mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  {ar ? 'جاري جلب المواعيد...' : 'Loading appointments...'}
+                </h3>
+                <p className="text-gray-500 mb-6">
+                  {ar ? 'الرجاء الانتظار بينما نصل ببيانات مواعيدك' : 'Please wait while we fetch your appointments'}
+                </p>
+              </div>
+            ) : appointments.length === 0 ? (
               <div className="text-center py-8 sm:py-12">
                 <CalendarDays className="mx-auto h-12 sm:h-16 w-12 sm:w-16 text-gray-300 mb-4" />
                 <h3 className="text-lg font-medium text-gray-900 mb-2">
@@ -294,7 +439,12 @@ export default function DashboardClient({ locale }: Props) {
             ) : (
               <div className="space-y-4">
                 {appointments.map((appointment) => {
-                  const therapist = getTherapistById(appointment.therapistId);
+                  // Prefer therapist info returned by the API (appointment.therapists)
+                  const apiTher = (appointment as any).therapists || (appointment as any).__resolvedTherapist || null;
+                  const therapist = apiTher ? {
+                    name: { en: apiTher.name_en || apiTher.name || apiTher.name_en || '', ar: apiTher.name_ar || apiTher.name_ar || '' },
+                    image: normalizeImage(apiTher.avatar_url || apiTher.avatar || apiTher.image || apiTher.image_url || apiTher.avatarUrl || apiTher.avatar_url)
+                  } : getTherapistById(appointment.therapistId) || { name: { en: '', ar: '' }, image: undefined };
                   
                   return (
                     <Card key={appointment.id} className="relative overflow-hidden group hover:shadow-lg transition-all duration-300">
@@ -314,7 +464,7 @@ export default function DashboardClient({ locale }: Props) {
                                 {getStatusBadge(appointment.status)}
                               </div>
                               <p className="text-sm text-muted-foreground mb-3">
-                                {ar ? therapist?.specialties[1] : therapist?.specialties[0]}
+                                {(ar ? therapist?.specialties?.[1] : therapist?.specialties?.[0]) || ''}
                               </p>
                               <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-2 sm:gap-4 text-sm text-muted-foreground">
                                 <span className="flex items-center gap-1">
@@ -440,7 +590,12 @@ export default function DashboardClient({ locale }: Props) {
             <h3 className="text-xl sm:text-2xl font-semibold mb-4 sm:mb-6">{ar ? "ملاحظات المعالج" : "Therapist Notes"}</h3>
             <div className="space-y-4 sm:space-y-6">
               {therapistNotes.map((noteData) => {
-                const therapist = getTherapistById(noteData.therapistId);
+                const sourceApt = appointments.find(a => a.id === noteData.id);
+                const apiTher = sourceApt ? (sourceApt as any).therapists : null;
+                const therapist = apiTher ? {
+                  name: { en: apiTher.name_en || apiTher.name || '', ar: apiTher.name_ar || '' },
+                  image: apiTher.avatar_url || apiTher.avatar || apiTher.image || undefined
+                } : getTherapistById(noteData.therapistId);
                 return (
                   <div 
                     key={noteData.id} 
@@ -458,7 +613,7 @@ export default function DashboardClient({ locale }: Props) {
                           {ar ? therapist?.name.ar : therapist?.name.en}
                         </div>
                         <div className="text-xs text-muted-foreground">
-                          {ar ? therapist?.specialties[1] : therapist?.specialties[0]}
+                          {(ar ? therapist?.specialties?.[1] : therapist?.specialties?.[0]) || ''}
                         </div>
                       </div>
                       <div className="text-xs text-muted-foreground">

@@ -1,264 +1,111 @@
 const express = require('express');
-const { createClient } = require('@supabase/supabase-js');
-const Joi = require('joi');
-
 const router = express.Router();
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+const supabase = require('../utils/supabase');
+const { authenticateToken } = require('../utils/jwt');
 
-// Validation schemas
-const medicalHistorySchema = Joi.object({
-  snapshot: Joi.object({
-    bloodType: Joi.string().valid('A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'),
-    height: Joi.number().min(0).max(300),
-    weight: Joi.number().min(0).max(500),
-    dateOfBirth: Joi.date().max('now'),
-    gender: Joi.string().valid('male', 'female', 'other'),
-    emergencyContact: Joi.object({
-      name: Joi.string().max(100),
-      phone: Joi.string().max(20),
-      relationship: Joi.string().max(50)
-    })
-  }).optional(),
-
-  conditions: Joi.array().items(
-    Joi.object({
-      id: Joi.string().optional(),
-      name: Joi.string().required().max(100),
-      diagnosisDate: Joi.date().max('now'),
-      status: Joi.string().valid('active', 'resolved', 'chronic'),
-      notes: Joi.string().max(500).allow('')
-    })
-  ).optional(),
-
-  medications: Joi.array().items(
-    Joi.object({
-      id: Joi.string().optional(),
-      name: Joi.string().required().max(100),
-      dosage: Joi.string().max(50),
-      frequency: Joi.string().max(50),
-      startDate: Joi.date().max('now'),
-      endDate: Joi.date().min(Joi.ref('startDate')).allow(null),
-      anticoagulant: Joi.boolean().default(false),
-      notes: Joi.string().max(500).allow('')
-    })
-  ).optional(),
-
-  allergies: Joi.array().items(
-    Joi.object({
-      id: Joi.string().optional(),
-      name: Joi.string().required().max(100),
-      severity: Joi.string().valid('mild', 'moderate', 'severe'),
-      reaction: Joi.string().max(200),
-      notes: Joi.string().max(500).allow('')
-    })
-  ).optional(),
-
-  vitals: Joi.object({
-    bloodPressure: Joi.object({
-      systolic: Joi.number().min(0).max(300),
-      diastolic: Joi.number().min(0).max(200),
-      lastRecorded: Joi.date().max('now')
-    }).optional(),
-    heartRate: Joi.number().min(0).max(300).optional(),
-    temperature: Joi.number().min(30).max(45).optional(),
-    lastUpdated: Joi.date().max('now').optional()
-  }).optional(),
-
-  consent: Joi.object({
-    consentToTreatment: Joi.boolean().default(false),
-    consentDate: Joi.date().max('now'),
-    witnessName: Joi.string().max(100).allow(''),
-    emergencyContactInformed: Joi.boolean().default(false)
-  }).optional(),
-
-  contraindications: Joi.object({
-    absolute: Joi.array().items(Joi.string().max(200)).optional(),
-    relative: Joi.array().items(Joi.string().max(200)).optional()
-  }).optional(),
-
-  isSetupComplete: Joi.boolean().default(false),
-  lastUpdated: Joi.date().default(Date.now)
-});
-
-// GET medical history for authenticated user
-router.get('/', async (req, res) => {
+// GET /api/medical-history - return saved history for authenticated patient
+router.get('/', authenticateToken, async (req, res) => {
   try {
-    const { data, error } = await supabase
-      .from('medical_histories')
-      .select('*')
-      .eq('user_id', req.user.id)
-      .single();
+    const userId = req.user?.id || req.user?.userId || req.user?.patient_id || req.user?.national_id || null;
+    if (!userId) return res.status(401).json({ success: false, error: 'Unauthorized' });
 
-    if (error) {
-      if (error.code === 'PGRST116') {
-        // No medical history found, return empty structure
-        return res.json({
-          snapshot: {},
-          conditions: [],
-          medications: [],
-          allergies: [],
-          vitals: {},
-          consent: {},
-          contraindications: {},
-          isSetupComplete: false,
-          lastUpdated: null
-        });
-      }
-      throw error;
-    }
-
-    res.json(data.history_data || {});
-  } catch (error) {
-    console.error('Get medical history error:', error);
-    res.status(500).json({ 
-      error: 'Failed to fetch medical history',
-      message: error.message 
-    });
-  }
-});
-
-// CREATE or UPDATE medical history
-router.put('/', async (req, res) => {
-  try {
-    // Validate request body
-    const { error: validationError, value } = medicalHistorySchema.validate(req.body);
-    if (validationError) {
-      return res.status(400).json({
-        error: 'Validation failed',
-        details: validationError.details
-      });
-    }
-
-    const historyData = {
-      ...value,
-      lastUpdated: new Date().toISOString()
-    };
-
-    // Check if record exists
-    const { data: existingRecord } = await supabase
-      .from('medical_histories')
-      .select('id')
-      .eq('user_id', req.user.id)
-      .single();
-
-    let result;
-    if (existingRecord) {
-      // Update existing record
-      result = await supabase
+    // Prefer medical_histories table (structured), fallback to patients.medical_history column
+    try {
+      const { data, error } = await supabase
         .from('medical_histories')
-        .update({ 
-          history_data: historyData,
-          updated_at: new Date().toISOString()
-        })
-        .eq('user_id', req.user.id);
-    } else {
-      // Create new record
-      result = await supabase
+        .select('data, updated_at')
+        .eq('patient_id', userId)
+        .single();
+
+      if (!error && data) {
+        return res.json({ success: true, data: data.data || null, updated_at: data.updated_at || null });
+      }
+    } catch (e) {
+      // Continue to fallback
+      console.warn('medical_histories table lookup failed, falling back to patients table:', e?.message || e);
+    }
+
+    // Fallback: read full patient row and look for medical_notes or medical_history conservatively
+    try {
+      const { data: patientRow, error: pErr } = await supabase
+        .from('patients')
+        .select('*')
+        .eq('id', userId)
+        .single();
+
+      if (pErr) {
+        console.error('Fallback query error for patients row:', pErr?.message || pErr);
+        return res.status(500).json({ success: false, error: 'Unable to fetch medical history' });
+      }
+
+      const raw = patientRow ? (patientRow.medical_history ?? patientRow.medical_notes ?? null) : null;
+      let parsed = null;
+      try { parsed = raw && typeof raw === 'string' ? JSON.parse(raw) : raw; } catch (pe) { parsed = raw; }
+      return res.json({ success: true, data: parsed || null, updated_at: patientRow?.updated_at || null });
+    } catch (e) {
+      console.error('Unexpected fallback error GET /api/medical-history', e);
+      return res.status(500).json({ success: false, error: 'Internal server error' });
+    }
+  } catch (err) {
+    console.error('Unexpected error in GET /api/medical-history', err);
+    return res.status(500).json({ success: false, error: 'Internal server error' });
+  }
+});
+
+// PUT /api/medical-history - save or replace medical history for authenticated patient
+router.put('/', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user?.id || req.user?.userId || req.user?.patient_id || req.user?.national_id || null;
+    if (!userId) return res.status(401).json({ success: false, error: 'Unauthorized' });
+
+    const payload = req.body || {};
+
+    // Try upsert into medical_histories table (preferred)
+    try {
+      const { data, error } = await supabase
         .from('medical_histories')
-        .insert({
-          user_id: req.user.id,
-          history_data: historyData,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        });
-    }
+        .upsert([
+          {
+            patient_id: userId,
+            data: payload,
+            updated_at: new Date().toISOString()
+          }
+        ], { onConflict: 'patient_id' })
+        .select()
+        .single();
 
-    if (result.error) throw result.error;
-
-    res.json({
-      success: true,
-      message: 'Medical history saved successfully',
-      data: historyData
-    });
-  } catch (error) {
-    console.error('Save medical history error:', error);
-    res.status(500).json({ 
-      error: 'Failed to save medical history',
-      message: error.message 
-    });
-  }
-});
-
-// GET medical history warnings/alerts
-router.get('/warnings', async (req, res) => {
-  try {
-    const { data, error } = await supabase
-      .from('medical_histories')
-      .select('history_data')
-      .eq('user_id', req.user.id)
-      .single();
-
-    if (error) throw error;
-
-    const history = data?.history_data || {};
-    const warnings = [];
-
-    // Check for anticoagulant medications
-    if (history.medications) {
-      const anticoagulants = history.medications.filter(med => med.anticoagulant);
-      if (anticoagulants.length > 0) {
-        warnings.push({
-          type: 'medication',
-          message: `Patient on anticoagulants: ${anticoagulants.map(m => m.name).join(', ')}`,
-          severity: 'high'
-        });
+      if (!error && data) {
+        return res.json({ success: true, data: data.data || payload, updated_at: data.updated_at || new Date().toISOString() });
       }
+    } catch (e) {
+      console.warn('Upsert to medical_histories failed, will try fallback to patients table:', e?.message || e);
     }
 
-    // Check for absolute contraindications
-    if (history.contraindications?.absolute?.length > 0) {
-      warnings.push({
-        type: 'contraindication',
-        message: `Absolute contraindications: ${history.contraindications.absolute.join(', ')}`,
-        severity: 'critical'
-      });
-    }
+    // Fallback: update patients.medical_notes (string) or medical_history
+    try {
+      const store = { medical_notes: JSON.stringify(payload), updated_at: new Date().toISOString() };
+      const { data, error } = await supabase
+        .from('patients')
+        .update(store)
+        .eq('id', userId)
+        .select()
+        .single();
 
-    // Check for severe allergies
-    if (history.allergies) {
-      const severeAllergies = history.allergies.filter(allergy => allergy.severity === 'severe');
-      if (severeAllergies.length > 0) {
-        warnings.push({
-          type: 'allergy',
-          message: `Severe allergies: ${severeAllergies.map(a => a.name).join(', ')}`,
-          severity: 'high'
-        });
+      if (error) {
+        console.error('Fallback update to patients.medical_notes failed:', error?.message || error);
+        return res.status(500).json({ success: false, error: 'Failed to save medical history' });
       }
+
+      let parsed = payload;
+      try { parsed = data?.medical_history ?? (data?.medical_notes ? JSON.parse(data.medical_notes) : payload); } catch (pe) { parsed = payload; }
+      return res.json({ success: true, data: parsed, updated_at: data?.updated_at || new Date().toISOString() });
+    } catch (e) {
+      console.error('Unexpected fallback error saving medical history:', e);
+      return res.status(500).json({ success: false, error: 'Failed to save medical history' });
     }
-
-    res.json({ warnings });
-  } catch (error) {
-    console.error('Get warnings error:', error);
-    res.status(500).json({ 
-      error: 'Failed to fetch medical warnings',
-      message: error.message 
-    });
-  }
-});
-
-// DELETE medical history
-router.delete('/', async (req, res) => {
-  try {
-    const { error } = await supabase
-      .from('medical_histories')
-      .delete()
-      .eq('user_id', req.user.id);
-
-    if (error) throw error;
-
-    res.json({
-      success: true,
-      message: 'Medical history deleted successfully'
-    });
-  } catch (error) {
-    console.error('Delete medical history error:', error);
-    res.status(500).json({ 
-      error: 'Failed to delete medical history',
-      message: error.message 
-    });
+  } catch (err) {
+    console.error('Unexpected error in PUT /api/medical-history', err);
+    return res.status(500).json({ success: false, error: 'Internal server error' });
   }
 });
 

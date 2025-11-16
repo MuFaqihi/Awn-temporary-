@@ -53,7 +53,7 @@ export default function MedicalHistoryClient({ locale }: Props) {
 
   const handleSetupComplete = () => {
     setShowSetup(false);
-    
+
     // Show success toast
     toastManager.add({
       title: ar ? "تم إعداد التاريخ الطبي" : "Medical History Setup Complete",
@@ -65,6 +65,39 @@ export default function MedicalHistoryClient({ locale }: Props) {
     setTimeout(() => {
       router.push(`/${locale}/dashboard/medical-history/summary`);
     }, 1000);
+  };
+
+  const handleSaveFromSetup = async (data: any) => {
+    // Build the full MedicalHistory shape from step data
+    const historyPayload = {
+      snapshot: data.snapshot || {},
+      conditions: data.conditions || [],
+      surgeries: [],
+      medications: data.medications || [],
+      allergies: data.allergies || [],
+      imaging: [],
+      vitals: {},
+      lifestyle: {},
+      womensHealth: { show: false },
+      goals: data.goals || { shortTerm: [], longTerm: [], functionalGoals: [] },
+      contraindications: { absolute: [], relative: [] },
+      consent: data.consent || { consentToTreatment: false, informedOfRisks: false, shareWithAssignedTherapist: false },
+      attachments: [],
+      timeline: [],
+      isComplete: true,
+      lastUpdated: new Date().toISOString()
+    };
+
+    try {
+      // Update local hook state
+      updateHistory(historyPayload as any);
+      // Persist to server
+      await saveNow();
+      toastManager.add({ title: ar ? 'تم الحفظ' : 'Saved', description: ar ? 'تم حفظ التاريخ الطبي بنجاح' : 'Medical history saved', type: 'success' });
+    } catch (err) {
+      console.error('Failed to save medical history from setup', err);
+      toastManager.add({ title: ar ? 'فشل في الحفظ' : 'Save failed', description: ar ? 'تعذر حفظ التاريخ الطبي' : 'Unable to save medical history', type: 'error' });
+    }
   };
 
   const getWarnings = () => {
@@ -127,6 +160,7 @@ export default function MedicalHistoryClient({ locale }: Props) {
       <MedicalHistorySetup 
         locale={locale} 
         onComplete={handleSetupComplete}
+        onSave={handleSaveFromSetup}
       />
     );
   }

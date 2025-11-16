@@ -25,70 +25,109 @@ export default function FavoritesClient({ locale }: FavoritesClientProps) {
   const labels = getMedicalHistoryLabels(locale);
   
   // State to manage saved therapists
-  const [savedTherapists, setSavedTherapists] = React.useState<string[]>([
-    "Thamer-alshahrani",
-    "Alaa-Ahmed",
+  const [savedTherapists, setSavedTherapists] = React.useState<string[]>([]);
+  const [favoriteProfiles, setFavoriteProfiles] = React.useState<any[]>([]);
+  const [loadingFavorites, setLoadingFavorites] = React.useState<boolean>(true);
 
+  // Load saved favorites from backend on mount
+  React.useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        setLoadingFavorites(true);
+        const api = (await import('@/lib/api')).apiService;
+        const res: any = await api.getFavorites();
+        const items = Array.isArray(res) ? res : (res?.data || []);
+        if (cancelled) return;
+        const ids = items.map((i: any) => String(i.therapist_id));
+        setSavedTherapists(ids);
 
-  ]); // Mock some saved therapists
-
-  const favoriteTherapists = therapists.filter(t => savedTherapists.includes(t.id));
-
-  const toggleSaved = (therapistId: string) => {
-    setSavedTherapists(prev => 
-      prev.includes(therapistId) 
-        ? prev.filter(id => id !== therapistId)
-        : [...prev, therapistId]
-    );
-    
-    // Show tooltip when saving
-    if (!savedTherapists.includes(therapistId)) {
-      // Show a temporary tooltip
-      const tooltip = document.createElement('div');
-      tooltip.textContent = labels.therapistWillReview;
-      tooltip.className = 'fixed top-4 right-4 bg-black text-white px-4 py-2 rounded-lg text-sm z-50 max-w-xs shadow-lg';
-      tooltip.style.cssText = `
-        position: fixed;
-        top: 1rem;
-        right: 1rem;
-        background: rgba(0, 0, 0, 0.9);
-        color: white;
-        padding: 0.75rem 1rem;
-        border-radius: 0.5rem;
-        font-size: 0.875rem;
-        z-index: 50;
-        max-width: 20rem;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-        backdrop-filter: blur(8px);
-        animation: slideInRight 0.3s ease-out;
-      `;
-      
-      // Add CSS animation
-      const style = document.createElement('style');
-      style.textContent = `
-        @keyframes slideInRight {
-          from { transform: translateX(100%); opacity: 0; }
-          to { transform: translateX(0); opacity: 1; }
-        }
-        @keyframes slideOutRight {
-          from { transform: translateX(0); opacity: 1; }
-          to { transform: translateX(100%); opacity: 0; }
-        }
-      `;
-      document.head.appendChild(style);
-      document.body.appendChild(tooltip);
-      
-      setTimeout(() => {
-        tooltip.style.animation = 'slideOutRight 0.3s ease-in';
-        setTimeout(() => {
-          if (document.body.contains(tooltip)) {
-            document.body.removeChild(tooltip);
+        // Fetch therapists from backend so we can render the actual profiles (backend uses UUID ids)
+        try {
+          const tRes: any = await api.getTherapists();
+          const list = Array.isArray(tRes) ? tRes : (tRes?.data || []);
+          if (!cancelled) {
+            const mapped = ids
+              .map(id => list.find((t: any) => String(t.id) === String(id)))
+              .filter(Boolean);
+            // If none matched (frontend local data uses slugs), try local fallback mapping
+            if (mapped.length === 0) {
+              const localMatches = ids
+                .map(id => therapists.find(t => String(t.id).toLowerCase() === String(id).toLowerCase()))
+                .filter(Boolean);
+              setFavoriteProfiles(localMatches as any[]);
+            } else {
+              setFavoriteProfiles(mapped as any[]);
+            }
           }
-          if (document.head.contains(style)) {
-            document.head.removeChild(style);
+        } catch (tErr) {
+          console.warn('Failed to fetch therapists from backend, falling back to local data', tErr);
+          const localMatches = ids
+            .map(id => therapists.find(t => String(t.id).toLowerCase() === String(id).toLowerCase()))
+            .filter(Boolean);
+          if (!cancelled) setFavoriteProfiles(localMatches as any[]);
+        }
+      } catch (err) {
+        // Provide clearer handling for common errors: unauthenticated or missing route
+        console.error('Failed to load favorites', err);
+        try {
+          const msg = err instanceof Error ? err.message : String(err);
+          // If it's a 401 or 404, surface a helpful message and navigate to dashboard
+          if (msg.includes('401') || msg.includes('Unauthorized')) {
+            // token likely missing/invalid — redirect to login
+            window.location.href = `/${locale}/login`;
+            return;
           }
-        }, 300);
-      }, 3000);
+          if (msg.includes('404')) {
+            // Favorites endpoint not found - fallback: redirect to dashboard and inform user
+            console.warn('Favorites endpoint returned 404 — ensure backend is running with /api/favorites mounted.');
+            // navigate back to dashboard so user isn't stuck
+            window.location.href = `/${locale}/dashboard`;
+            return;
+          }
+        } catch (e) {}
+      } finally {
+        if (!cancelled) setLoadingFavorites(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  const toggleSaved = async (therapistId: string) => {
+    const currentlySaved = savedTherapists.includes(therapistId);
+
+    // Optimistic UI update
+    setSavedTherapists(prev => currentlySaved ? prev.filter(id => id !== therapistId) : [...prev, therapistId]);
+
+    try {
+      const action = currentlySaved ? 'remove' : 'add';
+      const api = (await import('@/lib/api')).apiService;
+      const res: any = await api.toggleFavorite(therapistId, action);
+      // on success, refresh the favorites list and profiles
+      if (res) {
+        const updated: any = await api.getFavorites();
+        const items = Array.isArray(updated) ? updated : (updated?.data || []);
+        const ids = items.map((i: any) => String(i.therapist_id));
+        setSavedTherapists(ids);
+
+        try {
+          const tRes: any = await api.getTherapists();
+          const list = Array.isArray(tRes) ? tRes : (tRes?.data || []);
+          const mapped = ids
+            .map(id => list.find((t: any) => String(t.id) === String(id)))
+            .filter(Boolean);
+          setFavoriteProfiles(mapped as any[]);
+        } catch (tErr) {
+          const localMatches = ids
+            .map(id => therapists.find(t => String(t.id).toLowerCase() === String(id).toLowerCase()))
+            .filter(Boolean);
+          setFavoriteProfiles(localMatches as any[]);
+        }
+      }
+    } catch (err) {
+      console.error('Failed to toggle favorite', err);
+      // Revert optimistic update on error
+      setSavedTherapists(prev => currentlySaved ? [...prev, therapistId] : prev.filter(id => id !== therapistId));
     }
   };
 
@@ -104,14 +143,23 @@ export default function FavoritesClient({ locale }: FavoritesClientProps) {
 
   // Add warning check for high-intensity programs
   const hasConflictWarning = (therapist: any) => {
-    // Mock: Check if therapist specializes in high-intensity and user has anticoagulant
-    const isHighIntensity = therapist.specialties.some((s: string) => 
-      s.toLowerCase().includes('sports') || 
-      s.toLowerCase().includes('رياضي') ||
-      s.toLowerCase().includes('orthopedic') ||
-      s.toLowerCase().includes('عظام')
-    );
-    return isHighIntensity && medicalHistory.summary.hasAnticoagulant;
+    // Defensive: therapist.specialties may be missing or not an array (UUID-mapped data)
+    const specialtiesArr: string[] = Array.isArray(therapist?.specialties)
+      ? therapist.specialties
+      : (typeof therapist?.specialties === 'string' && therapist.specialties.trim() !== '' ? [therapist.specialties] : []);
+
+    const isHighIntensity = specialtiesArr.some((s: any) => {
+      if (!s) return false;
+      const str = String(s).toLowerCase();
+      return (
+        str.includes('sports') ||
+        str.includes('رياضي') ||
+        str.includes('orthopedic') ||
+        str.includes('عظام')
+      );
+    });
+
+    return Boolean(isHighIntensity && medicalHistory.summary.hasAnticoagulant);
   };
 
   return (
@@ -125,7 +173,7 @@ export default function FavoritesClient({ locale }: FavoritesClientProps) {
         </p>
       </div>
 
-      {favoriteTherapists.length === 0 ? (
+      {(!loadingFavorites && favoriteProfiles.length === 0) ? (
         <Card className="text-center py-20 bg-gradient-to-br from-teal-50 via-cyan-50 to-blue-50 border-0 shadow-xl relative overflow-hidden">
           {/* Background decoration */}
           <div className="absolute inset-0 bg-gradient-to-br from-teal-100/20 via-transparent to-cyan-100/20"></div>
@@ -193,7 +241,7 @@ export default function FavoritesClient({ locale }: FavoritesClientProps) {
                   {ar ? "المعالجون المحفوظون" : "Saved Therapists"}
                 </h2>
                 <p className="text-sm text-gray-500">
-                  {favoriteTherapists.length} {ar ? "معالج محفوظ" : "saved therapists"}
+                  {favoriteProfiles.length} {ar ? "معالج محفوظ" : "saved therapists"}
                 </p>
               </div>
             </div>
@@ -230,7 +278,7 @@ export default function FavoritesClient({ locale }: FavoritesClientProps) {
 
           {/* Therapist Cards Grid */}
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            {favoriteTherapists.map((therapist) => (
+            {favoriteProfiles.map((therapist) => (
               <Card key={therapist.id} className="overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
                 <div className="p-6">
                   <div className="flex items-start gap-4 mb-4">
@@ -256,7 +304,9 @@ export default function FavoritesClient({ locale }: FavoritesClientProps) {
                             {therapist.name[locale]}
                           </h3>
                           <p className="text-gray-600 truncate">
-                            {therapist.specialties[0]}
+                            {Array.isArray(therapist.specialties)
+                              ? therapist.specialties[0]
+                              : (typeof therapist.specialties === 'string' ? therapist.specialties : '')}
                           </p>
                           
                           {/* Medical Conflict Warning */}
@@ -295,13 +345,13 @@ export default function FavoritesClient({ locale }: FavoritesClientProps) {
 
                       {/* Languages and Modes */}
                       <div className="flex flex-wrap gap-2 mt-3">
-                        {therapist.languages.slice(0, 2).map((lang) => (
+                        {Array.isArray(therapist.languages) && therapist.languages.slice(0, 2).map((lang) => (
                           <Badge key={lang} variant="secondary" className="text-xs bg-gray-100 text-gray-700">
                             <Globe className="h-3 w-3 mr-1" />
                             {lang}
                           </Badge>
                         ))}
-                        {therapist.modes.map((mode) => (
+                        {Array.isArray(therapist.modes) && therapist.modes.map((mode) => (
                           <Badge key={mode} variant="secondary" className="text-xs bg-teal-100 text-teal-700">
                             {mode === "home" ? "🏠" : "💻"} 
                             {mode === "home" ? (ar ? "منزلية" : "Home") : (ar ? "أونلاين" : "Online")}
@@ -347,7 +397,7 @@ export default function FavoritesClient({ locale }: FavoritesClientProps) {
                   {/* Action Buttons */}
                   <div className="flex gap-3">
                     <Button 
-                      onClick={() => handleBookAppointment(therapist.id)}
+                      onClick={() => handleBookAppointment(therapist.slug || therapist.id)}
                       className="flex-1 transition-all duration-200 hover:scale-105 active:scale-95 text-white hover:shadow-lg"
                       style={{
                         backgroundColor: hasConflictWarning(therapist) ? '#d97706' : '#30846D'
@@ -365,7 +415,7 @@ export default function FavoritesClient({ locale }: FavoritesClientProps) {
                         : (ar ? "احجز موعد" : "Book Now")
                       }
                     </Button>
-                    <Link href={`/${locale}/therapists/${therapist.id}`} className="flex-1">
+                    <Link href={`/${locale}/therapists/${therapist.slug || therapist.id}`} className="flex-1">
                       <Button 
                         variant="outline"
                         className="w-full hover:bg-teal-50 hover:border-teal-200 hover:text-teal-700 transition-all duration-200 hover:scale-105 active:scale-95"
@@ -392,7 +442,7 @@ export default function FavoritesClient({ locale }: FavoritesClientProps) {
           </div>
 
           {/* Footer Note */}
-          {favoriteTherapists.length > 0 && (
+          {favoriteProfiles.length > 0 && (
             <Card className="bg-gray-50 border-gray-200">
               <div className="p-4 text-center">
                 <p className="text-sm text-gray-600">

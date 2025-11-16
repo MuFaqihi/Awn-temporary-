@@ -11,14 +11,16 @@ interface CalendarPickerProps {
 }
 
 export function CalendarPicker({ selectedDate, onDateSelect, availableDates, locale }: CalendarPickerProps) {
-  // Start with current date (November 2024)
-  const [currentMonth, setCurrentMonth] = useState(new Date(2024, 10, 1)) // November 2024
-  
-  const isArabic = locale === "ar"
-  
-  // Today is October 31, 2024 - FIXED: Define this at the top level
-  const today = new Date(2024, 9, 31) // October 31, 2024
+  // Compute dynamic today and start the calendar on today's month
+  const now = new Date()
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
   today.setHours(0, 0, 0, 0)
+
+  const [currentMonth, setCurrentMonth] = useState<Date>(
+    new Date(today.getFullYear(), today.getMonth(), 1)
+  )
+
+  const isArabic = locale === "ar"
   
   const getDaysInMonth = (date: Date) => {
     const year = date.getFullYear()
@@ -47,8 +49,19 @@ export function CalendarPicker({ selectedDate, onDateSelect, availableDates, loc
     return date.toISOString().split('T')[0]
   }
 
+  // Determine availability: if availableDates is not provided or looks sparse (e.g. < 31 days),
+  // we treat it as "no restriction" and allow all future dates up to `maxDate`.
+  const MAX_YEARS = 2
+  const maxDate = new Date(today.getFullYear() + MAX_YEARS, today.getMonth(), today.getDate())
+
   const isDateAvailable = (date: Date) => {
     const dateStr = formatDate(date)
+    const looksSparse = !availableDates || availableDates.length === 0 || availableDates.length < 31
+
+    if (looksSparse) {
+      return date >= today && date <= maxDate
+    }
+
     return availableDates.includes(dateStr)
   }
 
@@ -62,16 +75,28 @@ export function CalendarPicker({ selectedDate, onDateSelect, availableDates, loc
 
   // Navigation functions
   const goToPreviousMonth = () => {
-    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1))
+    const prev = new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1)
+    const minMonth = new Date(today.getFullYear(), today.getMonth(), 1)
+    if (prev < minMonth) return
+    setCurrentMonth(prev)
   }
 
   const goToNextMonth = () => {
-    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1))
+    const next = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1)
+    const maxMonth = new Date(maxDate.getFullYear(), maxDate.getMonth(), 1)
+    if (next > maxMonth) return
+    setCurrentMonth(next)
   }
 
   // Don't allow going before November 2024
   const isPreviousDisabled = () => {
-    return currentMonth.getFullYear() <= 2024 && currentMonth.getMonth() <= 10 // November 2024
+    const minMonth = new Date(today.getFullYear(), today.getMonth(), 1)
+    return currentMonth.getFullYear() === minMonth.getFullYear() && currentMonth.getMonth() === minMonth.getMonth()
+  }
+
+  const isNextDisabled = () => {
+    const maxMonth = new Date(maxDate.getFullYear(), maxDate.getMonth(), 1)
+    return currentMonth.getFullYear() === maxMonth.getFullYear() && currentMonth.getMonth() === maxMonth.getMonth()
   }
 
   return (
@@ -96,7 +121,8 @@ export function CalendarPicker({ selectedDate, onDateSelect, availableDates, loc
         <button
           type="button"
           onClick={goToNextMonth}
-          className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          disabled={isNextDisabled()}
+          className="p-2 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <ChevronRight className="w-4 h-4" />
         </button>

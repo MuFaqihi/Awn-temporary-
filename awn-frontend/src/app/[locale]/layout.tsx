@@ -27,13 +27,12 @@ export default async function RootLayout({
   params,
 }: {
   children: React.ReactNode;
-  params: { locale: Locale };
+  params: { locale: Locale } | Promise<{ locale: Locale }>;
 }) {
-  const lang = params.locale;
+  // Next may provide `params` as a Promise in some rendering paths — await safely.
+  const resolvedParams = (params && typeof (params as any)?.then === 'function') ? await params : params;
+  const lang = (resolvedParams as { locale: Locale }).locale;
   const dir = lang === "ar" ? "rtl" : "ltr";
-
-  // You can still fetch this for other pages/sections that need it
-  const dict: Dict = await getDictionary(lang);
 
   return (
     <html

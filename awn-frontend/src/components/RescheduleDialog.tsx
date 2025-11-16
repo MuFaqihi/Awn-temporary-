@@ -31,6 +31,17 @@ export function RescheduleDialog({ appointment, locale, trigger, onReschedule }:
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const therapist = getTherapistById(appointment.therapistId);
+  // Prefer therapist data returned by API when present on the appointment
+  const apiTherapist = (appointment as any).therapists || null;
+  const therapistResolved = apiTherapist ? {
+    name: { en: apiTherapist.name_en || apiTherapist.name || '', ar: apiTherapist.name_ar || '' },
+    image: apiTherapist.avatar_url || apiTherapist.avatar || apiTherapist.image || therapist?.image,
+    specialties: apiTherapist.specialties || therapist?.specialties || []
+  } : {
+    name: { en: therapist?.name?.en || therapist?.name || '', ar: therapist?.name?.ar || '' },
+    image: therapist?.image,
+    specialties: therapist?.specialties || []
+  };
 
   // Mock available time slots
   const availableSlots = [
@@ -50,7 +61,7 @@ export function RescheduleDialog({ appointment, locale, trigger, onReschedule }:
       
       // Skip Fridays (5) and Saturdays (6)
       if (date.getDay() !== 5 && date.getDay() !== 6) {
-        dates.push(date.toISOString().split('T')[0]);
+        dates.push(toLocalISODate(date));
       }
     }
     
@@ -65,13 +76,21 @@ export function RescheduleDialog({ appointment, locale, trigger, onReschedule }:
         // Include Sunday (0), Monday (1), Tuesday (2), Wednesday (3), Thursday (4)
         // Exclude Friday (5) and Saturday (6)
         if (dayOfWeek >= 0 && dayOfWeek <= 4) {
-          dates.push(date.toISOString().split('T')[0]);
+          dates.push(toLocalISODate(date));
         }
       }
     }
     
     return dates.sort();
   };
+
+  // Convert a Date to a local YYYY-MM-DD string (avoid UTC offset issues)
+  function toLocalISODate(d: Date) {
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
 
   const availableDates = generateAvailableDates();
 
@@ -107,6 +126,7 @@ export function RescheduleDialog({ appointment, locale, trigger, onReschedule }:
   const canReschedule = true; // Changed from !isWithinCutoff()
 
   const handleDateSelect = (dateStr: string) => {
+    // dateStr is expected in YYYY-MM-DD (local) format
     setSelectedDate(dateStr);
     setSelectedTime(""); // Reset time when date changes
   };
@@ -151,16 +171,16 @@ export function RescheduleDialog({ appointment, locale, trigger, onReschedule }:
           <Card className="p-4 bg-muted/30">
             <div className="flex items-center gap-3 mb-2">
               <img 
-                src={therapist?.image || "/avatar-placeholder.jpg"} 
+                src={therapistResolved.image || "/avatar-placeholder.jpg"} 
                 className="h-10 w-10 rounded-full object-cover" 
-                alt={therapist?.name.en || "Therapist"} 
+                alt={therapistResolved.name?.en || "Therapist"} 
               />
               <div>
                 <div className="font-medium">
                   {ar ? therapist?.name.ar : therapist?.name.en}
                 </div>
                 <div className="text-sm text-muted-foreground">
-                  {ar ? therapist?.specialties[0] : therapist?.specialties[0]}
+                  {(ar ? therapistResolved.specialties?.[0] : therapistResolved.specialties?.[0]) || ''}
                 </div>
               </div>
             </div>
@@ -195,11 +215,11 @@ export function RescheduleDialog({ appointment, locale, trigger, onReschedule }:
                 selected={selectedDate ? new Date(selectedDate) : undefined}
                 onSelect={(date) => {
                   if (date) {
-                    handleDateSelect(date.toISOString().split('T')[0]);
+                    handleDateSelect(toLocalISODate(date));
                   }
                 }}
                 disabled={(date) => {
-                  const dateStr = date.toISOString().split('T')[0];
+                  const dateStr = toLocalISODate(date);
                   return !availableDates.includes(dateStr);
                 }}
                 initialFocus
@@ -289,7 +309,7 @@ export function RescheduleDialog({ appointment, locale, trigger, onReschedule }:
               </h4>
               <div className="text-sm">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="font-medium">{ar ? therapist?.name.ar : therapist?.name.en}</span>
+                  <span className="font-medium">{ar ? therapistResolved.name.ar : therapistResolved.name.en}</span>
                   <span>•</span>
                   <span>{formatNewDate()}</span>
                   <span>•</span>

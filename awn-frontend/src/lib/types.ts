@@ -28,23 +28,16 @@ export interface Appointment {
   date: string;
   time: string;
   kind: 'online' | 'home';
-  status: 'upcoming' | 'completed' | 'cancelled';
+  status: 'upcoming' | 'completed' | 'cancelled' | 'pending';
 
   place?: string;
   meetLink?: string;
+  cancelReason?: string;
 }
 
-export type TherapistAppointment = {
-  id: string;
-  patientName: string;
-  patientNameEn: string;
-  date: string;
-  time: string;
-  kind: "online" | "Home" | "home";
-  status: "upcoming" | "completed" | "pending" | "completed";
-  place?: string;
-  meetLink?: string;
-  cancelReason?: string ;
+export type TherapistAppointment = Omit<Appointment, "therapistId"> & {
+  patientName?: string;
+  patientNameEn?: string;
 }
 
 // Treatment plan type

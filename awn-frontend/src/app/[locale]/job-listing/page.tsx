@@ -1,6 +1,5 @@
 "use client"
 
-import { use } from "react"
 import { useState } from "react"
 import Link from "next/link"
 import { Share2, MapPin, Clock, Users, CheckCircle } from "lucide-react"
@@ -11,9 +10,9 @@ import type { Locale } from "@/lib/i18n"
 export default function JobListingPage({
   params,
 }: {
-  params: Promise<{ locale: Locale }>
+  params: { locale: Locale }
 }) {
-  const { locale } = use(params)
+  const { locale } = params
   const isArabic = locale === "ar"
 
   const [showApplication, setShowApplication] = useState(false)

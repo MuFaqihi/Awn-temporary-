@@ -10,9 +10,24 @@ import { Card } from "@/components/ui/card"
 import Image from "next/image"
 import Link from "next/link"
 import type { Locale } from "@/lib/i18n"
+import { API_BASE_URL } from '@/lib/api'
+
+function normalizeImage(src?: string) {
+  if (!src) return src || ''
+  try {
+    if (src.startsWith('/therapists/')) {
+      const parts = src.split('/')
+      const base = parts[parts.length - 1]
+      return base ? `/${base}` : src
+    }
+  } catch (e) {
+    // ignore
+  }
+  return src
+}
 
 interface Props {
-  params: Promise<{ locale: Locale }>
+  params: { locale: Locale }
 }
 
 interface Therapist {
@@ -46,7 +61,7 @@ interface Therapist {
 }
 
 export default function TherapistsPage({ params }: Props) {
-  const { locale } = use(params)
+  const locale = params.locale
   const isArabic = locale === "ar"
 
   //   States جديدة
@@ -79,7 +94,7 @@ export default function TherapistsPage({ params }: Props) {
         setLoading(true)
         console.log('📡 جلب بيانات المعالجين من الباك إند...')
         
-        const response = await fetch('http://localhost:5000/api/therapists')
+        const response = await fetch(`${API_BASE_URL}/therapists`)
         
         if (!response.ok) {
           throw new Error('فشل في جلب بيانات المعالجين')
@@ -89,7 +104,23 @@ export default function TherapistsPage({ params }: Props) {
         console.log('  استجابة الباك إند:', result)
         
         if (result.success && Array.isArray(result.data)) {
-          setTherapists(result.data)
+          // Only include therapists whose image file exists in `public/` (case-insensitive)
+          const allowed = new Set([
+            'abdullah.jpg',
+            'alaa.png',
+            'ayman.jpg',
+            'khalid.jpg',
+            'nismah.jpg',
+            'thamir.png'
+          ])
+
+          const filtered = result.data.filter((t: any) => {
+            const img = normalizeImage(t.image || '') || ''
+            const base = (img.split('/').pop() || '').toLowerCase()
+            return allowed.has(base)
+          })
+
+          setTherapists(filtered)
           console.log(`  تم جلب ${result.data.length} معالج بنجاح`)
         } else {
           console.warn('⚠️ البيانات ليست بالشكل المتوقع:', result)
@@ -324,9 +355,10 @@ export default function TherapistsPage({ params }: Props) {
               <div className="relative">
                 <div className="aspect-[4/3] relative overflow-hidden">
                   <Image
-                    src={therapist.image || "/avatar-placeholder.jpg"}
+                    src={normalizeImage(therapist.image || "/avatar-placeholder.jpg")}
                     alt={therapist.name[locale]}
                     fill
+                    sizes="(max-width: 768px) 300px, 600px"
                     className="object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent" />

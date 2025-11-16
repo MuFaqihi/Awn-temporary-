@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Mail, Eye, EyeOff } from 'lucide-react';
 import { toastManager } from '@/hooks/use-toast';
+import { login } from '@/lib/api';
 
 type Locale = 'ar' | 'en';
 type Dict = {
@@ -93,29 +94,15 @@ export default function LoginPage({
 
       console.log('  إرسال بيانات تسجيل الدخول:', loginData);
 
-      const response = await fetch('http://localhost:5000/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(loginData),
-      });
-
-      // تحقق من نوع الرد
-      const contentType = response.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
-        const textResponse = await response.text();
-        console.error(' الرد ليس JSON:', textResponse.substring(0, 200));
-        throw new Error('الخادم لم يرد بالشكل المتوقع');
-      }
-
-      const result = await response.json();
-      console.log('  استجابة تسجيل الدخول:', result);
+        const result = await login(loginData);
 
       if (result.success) {
         // حفظ التوكن والمستخدم
         localStorage.setItem('token', result.token);
         localStorage.setItem('user', JSON.stringify(result.user));
+        localStorage.setItem('isLoggedIn', '1');
+        // Notify other components in the same window that auth changed
+        try { window.dispatchEvent(new Event('auth-change')); } catch (e) {}
         
         toastManager.add({
           title: t.success,
@@ -123,7 +110,8 @@ export default function LoginPage({
         });
 
         // التوجيه إلى الصفحة التالية
-        router.push(next);
+        // small delay so storage events propagate and background fetches see the token
+        setTimeout(() => router.push(next), 120);
       } else {
         toastManager.add({
           title: result.error || t.error,
@@ -131,9 +119,10 @@ export default function LoginPage({
         });
       }
     } catch (error) {
-      console.error(' خطأ في تسجيل الدخول:', error);
+      // Prefer an Error message from the API if available
+      const message = error instanceof Error ? error.message : String(error);
       toastManager.add({
-        title: t.error,
+        title: message || t.error,
         description: t.networkError,
         type: 'error'
       });

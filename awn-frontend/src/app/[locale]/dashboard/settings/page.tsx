@@ -8,10 +8,13 @@ interface SettingsPageProps {
   };
 }
 
-export default function SettingsPage({ params }: SettingsPageProps) {
+export default async function SettingsPage({ params }: SettingsPageProps) {
+  // `params` is provided synchronously by Next.js; don't await it
+  const locale = params.locale;
+
   return (
-    <DashboardLayout locale={params.locale}>
-      <SettingsClient locale={params.locale} />
+    <DashboardLayout locale={locale}>
+      <SettingsClient locale={locale} />
     </DashboardLayout>
   );
 }
